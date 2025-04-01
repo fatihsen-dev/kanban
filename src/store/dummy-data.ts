@@ -7,15 +7,13 @@ export const initialData: Column[] = [
       items: [
          {
             id: uuidv4(),
-            name: "Todo 1",
+            title: "Todo 1",
             created_at: new Date().toISOString(),
-            order: 0,
          },
          {
             id: uuidv4(),
-            name: "Todo 2",
+            title: "Todo 2",
             created_at: new Date().toISOString(),
-            order: 1,
          },
       ],
       created_at: new Date().toISOString(),
@@ -26,27 +24,23 @@ export const initialData: Column[] = [
       items: [
          {
             id: uuidv4(),
-            name: "In Progress 1",
+            title: "In Progress 1",
             created_at: new Date().toISOString(),
-            order: 0,
          },
          {
             id: uuidv4(),
-            name: "In Progress 2",
+            title: "In Progress 2",
             created_at: new Date().toISOString(),
-            order: 1,
          },
          {
             id: uuidv4(),
-            name: "In Progress 3",
+            title: "In Progress 3",
             created_at: new Date().toISOString(),
-            order: 2,
          },
          {
             id: uuidv4(),
-            name: "In Progress 4",
+            title: "In Progress 4",
             created_at: new Date().toISOString(),
-            order: 3,
          },
       ],
       created_at: new Date().toISOString(),
@@ -57,15 +51,13 @@ export const initialData: Column[] = [
       items: [
          {
             id: uuidv4(),
-            name: "Done 1",
+            title: "Done 1",
             created_at: new Date().toISOString(),
-            order: 0,
          },
          {
             id: uuidv4(),
-            name: "Done 2",
+            title: "Done 2",
             created_at: new Date().toISOString(),
-            order: 1,
          },
       ],
       created_at: new Date().toISOString(),

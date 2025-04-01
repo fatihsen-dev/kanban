@@ -13,9 +13,9 @@ interface State {
          close: () => void;
          open: () => void;
       };
-      add: (column_id: string, item: Omit<Item, "id" | "created_at">) => void;
-      remove: (column_id: string, item_id: string) => void;
-      move: (prev_column_id: string, new_column_id: string, item: Item, from_index?: number, to_index?: number) => void;
+      add: (column_id: Column["id"], item: Omit<Item, "id" | "created_at">) => void;
+      remove: (item_id: Item["id"]) => void;
+      move: (prev_column_id: Column["id"], new_column_id: Column["id"], item: Item) => void;
    };
    column: {
       modal: {
@@ -25,7 +25,7 @@ interface State {
          open: () => void;
       };
       add: (column: Omit<Column, "id" | "created_at">) => void;
-      remove: (column_id: string) => void;
+      remove: (column_id: Column["id"]) => void;
    };
 }
 
@@ -73,7 +73,7 @@ const useDataStore = create<State>()(
                   (state) => ({
                      data: state.data.map((column) => {
                         if (column.id === column_id) {
-                           const newItem = {
+                           const newItem: Item = {
                               id: uuidv4(),
                               ...item,
                               created_at: new Date().toISOString(),
@@ -92,11 +92,11 @@ const useDataStore = create<State>()(
                   "add-item"
                );
             },
-            remove: (column_id, item_id) => {
+            remove: (item_id) => {
                set(
                   (state) => ({
                      data: state.data.map((column) => {
-                        if (column.id === column_id) {
+                        if (column.items.some((i) => i.id === item_id)) {
                            return { ...column, items: column.items.filter((i) => i.id !== item_id) };
                         }
                         return column;
@@ -106,78 +106,25 @@ const useDataStore = create<State>()(
                   "remove-item"
                );
             },
-            move: (prev_column_id, new_column_id, item, from_order, to_order) => {
+            move: (prev_column_id, new_column_id, item) => {
+               if (prev_column_id === new_column_id) return;
+
                set(
                   (state) => {
-                     if (from_order === undefined || to_order === undefined) {
-                        return {
-                           data: state.data.map((column) => {
-                              if (column.id === prev_column_id) {
-                                 return { ...column, items: column.items.filter((i) => i.id !== item.id) };
-                              } else if (column.id === new_column_id) {
-                                 const newItem = {
-                                    ...item,
-                                    id: uuidv4(),
-                                    created_at: new Date().toISOString(),
-                                    order: column.items.length,
-                                 };
-
-                                 return { ...column, items: [...column.items, newItem] };
-                              } else {
-                                 return column;
-                              }
-                           }),
-                        };
-                     }
-
-                     if (prev_column_id === new_column_id) {
-                        return {
-                           data: state.data.map((column) => {
-                              const prevItem = column.items.find((i) => i.order === from_order);
-                              const nextItem = column.items.find((i) => i.order === to_order);
-
-                              if (!prevItem || !nextItem) {
-                                 return column;
-                              }
-
-                              if (column.id === prev_column_id) {
-                                 return {
-                                    ...column,
-                                    items: column.items.map((i) => {
-                                       if (i.order === from_order) {
-                                          return { ...nextItem, order: from_order };
-                                       }
-                                       if (i.order === to_order) {
-                                          return { ...prevItem, order: to_order };
-                                       }
-                                       return i;
-                                    }),
-                                 };
-                              }
-                              return column;
-                           }),
-                        };
-                     }
-
                      return {
                         data: state.data.map((column) => {
-                           if (column.id === new_column_id) {
-                              return {
-                                 ...column,
-                                 items: column.items
-                                    .filter((i) => i.order !== to_order)
-                                    .map((i, index) => ({
-                                       ...i,
-                                       order: index,
-                                    })),
+                           if (column.id === prev_column_id) {
+                              return { ...column, items: column.items.filter((i) => i.id !== item.id) };
+                           } else if (column.id === new_column_id) {
+                              const newItem = {
+                                 ...item,
+                                 id: uuidv4(),
+                                 created_at: new Date().toISOString(),
                               };
+                              return { ...column, items: [...column.items, newItem] };
+                           } else {
+                              return column;
                            }
-                           if (column.id === new_column_id) {
-                              return {
-                                 ...column,
-                              };
-                           }
-                           return column;
                         }),
                      };
                   },

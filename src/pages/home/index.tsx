@@ -1,10 +1,13 @@
 import useDataStore from "@/store/data";
 import { Plus } from "lucide-react";
-import Column from "./column";
-import CreateColumnModal from "./create-column-modal";
-import CreateItemModal from "./create-item-modal";
+import { useQueryState } from "nuqs";
+import Column from "./components/column";
+import CreateColumnModal from "./components/create-column-modal";
+import CreateItemModal from "./components/create-item-modal";
+import ItemDetails from "./components/item-details";
 
 export default function Home() {
+   const [itemId, setItemId] = useQueryState("itemId");
    const store = useDataStore();
 
    return (
@@ -15,7 +18,7 @@ export default function Home() {
                gridTemplateColumns: `repeat(${store.data.length}, 1fr)`,
             }}>
             {store.data.map((column) => (
-               <Column key={column.id} column={column} />
+               <Column key={column.id} column={column} itemId={itemId} setItemId={setItemId} />
             ))}
          </div>
          <div
@@ -25,6 +28,7 @@ export default function Home() {
          </div>
          <CreateItemModal />
          <CreateColumnModal />
+         <ItemDetails itemId={itemId} setItemId={setItemId} />
       </div>
    );
 }

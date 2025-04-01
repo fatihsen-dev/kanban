@@ -14,15 +14,17 @@ import Item from "./item";
 
 interface ColumnProps {
    column: Column;
+   itemId: string | null;
+   setItemId: (itemId: string | null) => void;
 }
 
-export default function Column({ column }: ColumnProps) {
+export default function Column({ column, itemId, setItemId }: ColumnProps) {
    const store = useDataStore();
 
    const [{ isOver }, drop] = useDrop(() => ({
       accept: "ITEM",
       drop: ({ column_id, ...item }: Item & { column_id: string }) => {
-         // store.item.move(column_id, column.id, item);
+         store.item.move(column_id, column.id, item);
       },
       collect: (monitor) => ({
          isOver: monitor.isOver(),
@@ -38,7 +40,7 @@ export default function Column({ column }: ColumnProps) {
          <div className='flex justify-between items-center border-b border-gray-300 pb-4'>
             <div className='flex flex-col gap-2'>
                <h2 className='text-lg font-bold'>{column.title}</h2>
-               <span className='text-sm text-gray-500'>{column.id}</span>
+               <span className='text-sm text-gray-500'>{column.items.length} items</span>
             </div>
             <DropdownMenu>
                <DropdownMenuTrigger className='cursor-pointer'>
@@ -58,7 +60,7 @@ export default function Column({ column }: ColumnProps) {
          </div>
          <div className='flex flex-col gap-2 flex-1'>
             {column.items.map((item) => (
-               <Item key={item.order} column_id={column.id} item={item} />
+               <Item key={item.id} column_id={column.id} item={item} itemId={itemId} setItemId={setItemId} />
             ))}
          </div>
          <div className='flex justify-between items-center border-t border-gray-300 pt-4'>

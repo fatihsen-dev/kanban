@@ -1,6 +1,6 @@
 interface Item {
    id: string;
-   name: string;
+   title: string;
+   description?: string;
    created_at: string;
-   order: number;
 }

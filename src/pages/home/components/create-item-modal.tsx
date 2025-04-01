@@ -11,21 +11,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useDataStore from "@/store/data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CreateItemModal() {
    const store = useDataStore();
 
-   const [name, setName] = useState("");
+   const [title, setTitle] = useState("");
 
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (name.trim() === "" || !store.item.modal.column_id) return;
+      if (title.trim() === "" || !store.item.modal.column_id) return;
 
-      store.item.add(store.item.modal.column_id, { name });
-      setName("");
+      store.item.add(store.item.modal.column_id, { title });
+      setTitle("");
       store.item.modal.close();
    };
+
+   useEffect(() => {
+      if (!store.item.modal.isOpen) {
+         setTitle("");
+      }
+   }, [store.item.modal.isOpen]);
 
    return (
       <Dialog open={store.item.modal.isOpen} onOpenChange={() => store.item.modal.toggle(store.item.modal.column_id)}>
@@ -37,10 +43,10 @@ export default function CreateItemModal() {
                </DialogHeader>
                <div className='flex items-center space-x-2'>
                   <div className='grid flex-1 gap-2'>
-                     <Label htmlFor='name' className='sr-only'>
-                        Name
+                     <Label htmlFor='title' className='sr-only'>
+                        Title
                      </Label>
-                     <Input id='name' value={name} onInput={(e) => setName(e.currentTarget.value)} />
+                     <Input id='title' value={title} onInput={(e) => setTitle(e.currentTarget.value)} />
                   </div>
                </div>
                <DialogFooter className='sm:justify-end'>
@@ -49,7 +55,7 @@ export default function CreateItemModal() {
                         Close
                      </Button>
                   </DialogClose>
-                  <Button disabled={name.trim() === ""} type='submit'>
+                  <Button disabled={title.trim() === ""} type='submit'>
                      Create
                   </Button>
                </DialogFooter>

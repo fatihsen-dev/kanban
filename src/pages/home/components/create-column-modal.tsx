@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useDataStore from "@/store/data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CreateColumnModal() {
    const store = useDataStore();
@@ -26,6 +26,12 @@ export default function CreateColumnModal() {
       setTitle("");
       store.column.modal.close();
    };
+
+   useEffect(() => {
+      if (!store.column.modal.isOpen) {
+         setTitle("");
+      }
+   }, [store.column.modal.isOpen]);
 
    return (
       <Dialog open={store.column.modal.isOpen} onOpenChange={store.column.modal.toggle}>
