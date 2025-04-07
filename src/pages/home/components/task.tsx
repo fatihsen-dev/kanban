@@ -27,7 +27,7 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
 
    const [{ isDragging }, drag] = useDrag(() => ({
       type: TypeName,
-      task: { ...task, column_id },
+      item: { ...task, column_id },
       collect: (monitor) => ({
          isDragging: monitor.isDragging(),
       }),
