@@ -41,7 +41,7 @@ export default function CreateColumnModal() {
                   <DialogTitle>Create Column</DialogTitle>
                   <DialogDescription>Create a new column</DialogDescription>
                </DialogHeader>
-               <div className='flex tasks-center space-x-2'>
+               <div className='flex items-center space-x-2'>
                   <div className='grid flex-1 gap-2'>
                      <Label htmlFor='name' className='sr-only'>
                         Name

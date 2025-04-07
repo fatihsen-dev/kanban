@@ -41,7 +41,7 @@ export default function CreateTaskModal() {
                   <DialogTitle>Create Task</DialogTitle>
                   <DialogDescription>Create a new task</DialogDescription>
                </DialogHeader>
-               <div className='flex tasks-center space-x-2'>
+               <div className='flex items-center space-x-2'>
                   <div className='grid flex-1 gap-2'>
                      <Label htmlFor='title' className='sr-only'>
                         Title

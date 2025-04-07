@@ -41,7 +41,7 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
          className={`bg-white border-2 border-dashed border-gray-300 rounded-md p-4 transition-colors ${
             isDragging ? "opacity-50 cursor-move" : "opacity-100 cursor-move"
          }`}>
-         <div className='flex tasks-center gap-2 justify-between'>
+         <div className='flex items-center gap-2 justify-between'>
             <button
                onClick={() => setTaskId(task.id)}
                className={`hover:underline cursor-pointer ${taskId === task.id ? "text-blue-500" : ""}`}>

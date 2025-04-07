@@ -23,7 +23,7 @@ export default function Home() {
          </div>
          <div
             onClick={store.column.modal.toggle}
-            className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex tasks-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
+            className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
             <Plus size={46} strokeWidth={1.3} />
          </div>
          <CreateTaskModal />

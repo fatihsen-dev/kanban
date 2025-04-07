@@ -38,7 +38,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
             isOver ? "bg-gray-200" : ""
          }`}>
          <div className='flex flex-col w-full'>
-            <div className='w-full flex tasks-center justify-between gap-2'>
+            <div className='w-full flex items-center justify-between gap-2'>
                <h2 className='text-lg font-bold'>{column.title}</h2>
                <DropdownMenu>
                   <DropdownMenuTrigger className='cursor-pointer'>
@@ -63,7 +63,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                <Task key={task.id} column_id={column.id} task={task} taskId={taskId} setTaskId={setTaskId} />
             ))}
          </div>
-         <div className='flex justify-between tasks-center border-t border-gray-300 pt-4'>
+         <div className='flex justify-between items-center border-t border-gray-300 pt-4'>
             <Button size='lg' variant='outline' className='w-full' onClick={() => store.task.modal.toggle(column.id)}>
                Add Task
             </Button>
