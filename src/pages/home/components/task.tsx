@@ -1,9 +1,9 @@
 import {
    DropdownMenu,
    DropdownMenuContent,
+   DropdownMenuItem,
    DropdownMenuLabel,
    DropdownMenuSeparator,
-   DropdownMenuTask,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useDataStore from "@/store/data";
@@ -54,12 +54,12 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
                <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                   <DropdownMenuLabel>Column</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuTask
+                  <DropdownMenuItem
                      className='cursor-pointer'
                      variant='destructive'
                      onClick={() => store.task.remove(task.id)}>
                      Delete
-                  </DropdownMenuTask>
+                  </DropdownMenuItem>
                </DropdownMenuContent>
             </DropdownMenu>
          </div>
