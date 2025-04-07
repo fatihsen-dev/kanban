@@ -8,39 +8,40 @@ import {
    DrawerHeader,
    DrawerTitle,
 } from "@/components/ui/drawer";
-import useItem from "@/hooks/useItem";
+import useTask from "@/hooks/useTask";
+
 import { useEffect, useState } from "react";
 
-interface ItemDetailsProps {
-   itemId: string | null;
-   setItemId: (itemId: string | null) => void;
+interface TaskDetailsProps {
+   taskId: string | null;
+   setTaskId: (taskId: string | null) => void;
 }
 
-export default function ItemDetails({ itemId, setItemId }: ItemDetailsProps) {
-   const { getById } = useItem();
+export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
+   const { getById } = useTask();
    const [isOpen, setIsOpen] = useState(false);
-   const [item, setItem] = useState<Item | null>(null);
+   const [task, setTask] = useState<Task | null>(null);
    useEffect(() => {
-      if (itemId) {
-         const item = getById(itemId);
-         if (item) {
-            setItem(item);
+      if (taskId) {
+         const task = getById(taskId);
+         if (task) {
+            setTask(task);
             setIsOpen(true);
          }
       }
-   }, [itemId]);
+   }, [taskId]);
 
    return (
       <Drawer
          direction='right'
          open={isOpen}
          onOpenChange={() => {
-            setItemId(null);
+            setTaskId(null);
             setIsOpen(false);
          }}>
          <DrawerContent>
             <DrawerHeader>
-               <DrawerTitle>{item?.title}</DrawerTitle>
+               <DrawerTitle>{task?.title}</DrawerTitle>
                <DrawerDescription>This action cannot be undone.</DrawerDescription>
             </DrawerHeader>
             <DrawerFooter>

@@ -1,6 +1,6 @@
 interface Column {
    id: string;
    title: string;
-   items: Item[];
+   tasks: Task[];
    created_at: string;
 }

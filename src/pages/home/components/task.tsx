@@ -1,9 +1,9 @@
 import {
    DropdownMenu,
    DropdownMenuContent,
-   DropdownMenuItem,
    DropdownMenuLabel,
    DropdownMenuSeparator,
+   DropdownMenuTask,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useDataStore from "@/store/data";
@@ -11,23 +11,23 @@ import { Ellipsis } from "lucide-react";
 import { useRef } from "react";
 import { useDrag } from "react-dnd";
 
-interface ItemProps {
-   item: Item;
+interface TaskProps {
+   task: Task;
    column_id: string;
-   itemId: string | null;
-   setItemId: (itemId: string | null) => void;
+   taskId: string | null;
+   setTaskId: (taskId: string | null) => void;
 }
 
-const ItemType = "ITEM";
+export const TypeName = "TASK";
 
-export default function Item({ item, column_id, itemId, setItemId }: ItemProps) {
+export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) {
    const store = useDataStore();
 
    const ref = useRef<HTMLDivElement>(null);
 
    const [{ isDragging }, drag] = useDrag(() => ({
-      type: ItemType,
-      item: { ...item, column_id },
+      type: TypeName,
+      task: { ...task, column_id },
       collect: (monitor) => ({
          isDragging: monitor.isDragging(),
       }),
@@ -41,11 +41,11 @@ export default function Item({ item, column_id, itemId, setItemId }: ItemProps) 
          className={`bg-white border-2 border-dashed border-gray-300 rounded-md p-4 transition-colors ${
             isDragging ? "opacity-50 cursor-move" : "opacity-100 cursor-move"
          }`}>
-         <div className='flex items-center gap-2 justify-between'>
+         <div className='flex tasks-center gap-2 justify-between'>
             <button
-               onClick={() => setItemId(item.id)}
-               className={`hover:underline cursor-pointer ${itemId === item.id ? "text-blue-500" : ""}`}>
-               {item.title}
+               onClick={() => setTaskId(task.id)}
+               className={`hover:underline cursor-pointer ${taskId === task.id ? "text-blue-500" : ""}`}>
+               {task.title}
             </button>
             <DropdownMenu>
                <DropdownMenuTrigger className='cursor-pointer'>
@@ -54,12 +54,12 @@ export default function Item({ item, column_id, itemId, setItemId }: ItemProps) 
                <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                   <DropdownMenuLabel>Column</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
+                  <DropdownMenuTask
                      className='cursor-pointer'
                      variant='destructive'
-                     onClick={() => store.item.remove(item.id)}>
+                     onClick={() => store.task.remove(task.id)}>
                      Delete
-                  </DropdownMenuItem>
+                  </DropdownMenuTask>
                </DropdownMenuContent>
             </DropdownMenu>
          </div>

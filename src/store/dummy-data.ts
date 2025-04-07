@@ -4,7 +4,7 @@ export const initialData: Column[] = [
    {
       id: uuidv4(),
       title: "Todo",
-      items: [
+      tasks: [
          {
             id: uuidv4(),
             title: "Todo 1",
@@ -21,7 +21,7 @@ export const initialData: Column[] = [
    {
       id: uuidv4(),
       title: "In Progress",
-      items: [
+      tasks: [
          {
             id: uuidv4(),
             title: "In Progress 1",
@@ -48,7 +48,7 @@ export const initialData: Column[] = [
    {
       id: uuidv4(),
       title: "Done",
-      items: [
+      tasks: [
          {
             id: uuidv4(),
             title: "Done 1",

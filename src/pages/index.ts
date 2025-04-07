@@ -1,4 +1,4 @@
 import Home from "@/pages/home";
-import ItemDetails from "@/pages/home/components/item-details";
+import TaskDetails from "@/pages/home/components/task-details";
 
-export { Home, ItemDetails };
+export { Home, TaskDetails };

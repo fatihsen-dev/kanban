@@ -5,7 +5,7 @@ import { initialData } from "./dummy-data";
 
 interface State {
    data: Column[];
-   item: {
+   task: {
       modal: {
          isOpen: boolean;
          column_id: string | null;
@@ -13,9 +13,9 @@ interface State {
          close: () => void;
          open: () => void;
       };
-      add: (column_id: Column["id"], item: Omit<Item, "id" | "created_at">) => void;
-      remove: (item_id: Item["id"]) => void;
-      move: (prev_column_id: Column["id"], new_column_id: Column["id"], item: Item) => void;
+      add: (column_id: Column["id"], task: Omit<Task, "id" | "created_at">) => void;
+      remove: (task_id: Task["id"]) => void;
+      move: (prev_column_id: Column["id"], new_column_id: Column["id"], task: Task) => void;
    };
    column: {
       modal: {
@@ -33,55 +33,55 @@ const useDataStore = create<State>()(
    devtools(
       (set) => ({
          data: initialData,
-         item: {
+         task: {
             modal: {
                isOpen: false,
                column_id: null,
                toggle: (column_id) => {
                   set(
                      (state) => ({
-                        item: {
-                           ...state.item,
-                           modal: { ...state.item.modal, column_id, isOpen: !state.item.modal.isOpen },
+                        task: {
+                           ...state.task,
+                           modal: { ...state.task.modal, column_id, isOpen: !state.task.modal.isOpen },
                         },
                      }),
                      undefined,
-                     "toggle-item-modal"
+                     "toggle-task-modal"
                   );
                },
                close: () => {
                   set(
                      (state) => ({
-                        item: { ...state.item, modal: { ...state.item.modal, isOpen: false } },
+                        task: { ...state.task, modal: { ...state.task.modal, isOpen: false } },
                      }),
                      undefined,
-                     "close-item-modal"
+                     "close-task-modal"
                   );
                },
                open: () => {
                   set(
                      (state) => ({
-                        item: { ...state.item, modal: { ...state.item.modal, isOpen: true } },
+                        task: { ...state.task, modal: { ...state.task.modal, isOpen: true } },
                      }),
                      undefined,
-                     "open-item-modal"
+                     "open-task-modal"
                   );
                },
             },
-            add: (column_id, item) => {
+            add: (column_id, task) => {
                set(
                   (state) => ({
                      data: state.data.map((column) => {
                         if (column.id === column_id) {
-                           const newItem: Item = {
+                           const newTask: Task = {
                               id: uuidv4(),
-                              ...item,
+                              ...task,
                               created_at: new Date().toISOString(),
                            };
 
                            return {
                               ...column,
-                              items: [...column.items, newItem],
+                              tasks: [...column.tasks, newTask],
                            };
                         } else {
                            return column;
@@ -89,24 +89,24 @@ const useDataStore = create<State>()(
                      }),
                   }),
                   undefined,
-                  "add-item"
+                  "add-task"
                );
             },
-            remove: (item_id) => {
+            remove: (task_id) => {
                set(
                   (state) => ({
                      data: state.data.map((column) => {
-                        if (column.items.some((i) => i.id === item_id)) {
-                           return { ...column, items: column.items.filter((i) => i.id !== item_id) };
+                        if (column.tasks.some((i) => i.id === task_id)) {
+                           return { ...column, tasks: column.tasks.filter((i) => i.id !== task_id) };
                         }
                         return column;
                      }),
                   }),
                   undefined,
-                  "remove-item"
+                  "remove-task"
                );
             },
-            move: (prev_column_id, new_column_id, item) => {
+            move: (prev_column_id, new_column_id, task) => {
                if (prev_column_id === new_column_id) return;
 
                set(
@@ -114,14 +114,14 @@ const useDataStore = create<State>()(
                      return {
                         data: state.data.map((column) => {
                            if (column.id === prev_column_id) {
-                              return { ...column, items: column.items.filter((i) => i.id !== item.id) };
+                              return { ...column, tasks: column.tasks.filter((i) => i.id !== task.id) };
                            } else if (column.id === new_column_id) {
-                              const newItem = {
-                                 ...item,
+                              const newTask = {
+                                 ...task,
                                  id: uuidv4(),
                                  created_at: new Date().toISOString(),
                               };
-                              return { ...column, items: [...column.items, newItem] };
+                              return { ...column, tasks: [...column.tasks, newTask] };
                            } else {
                               return column;
                            }
@@ -129,7 +129,7 @@ const useDataStore = create<State>()(
                      };
                   },
                   undefined,
-                  "move-item"
+                  "move-task"
                );
             },
          },
