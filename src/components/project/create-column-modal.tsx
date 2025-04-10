@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useDataStore from "@/store/data";
+import { useProjectStore } from "@/store/project-store";
 import { useEffect, useState } from "react";
 
 export default function CreateColumnModal() {
-   const store = useDataStore();
+   const store = useProjectStore();
 
    const [title, setTitle] = useState("");
 

@@ -7,7 +7,7 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useDataStore from "@/store/data";
+import { useProjectStore } from "@/store/project-store";
 import { Ellipsis } from "lucide-react";
 import { useDrop } from "react-dnd";
 import Task, { TypeName } from "./task";
@@ -19,7 +19,7 @@ interface ColumnProps {
 }
 
 export default function Column({ column, taskId, setTaskId }: ColumnProps) {
-   const store = useDataStore();
+   const store = useProjectStore();
 
    const [{ isOver }, drop] = useDrop(() => ({
       accept: TypeName,

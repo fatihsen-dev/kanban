@@ -1,4 +1,7 @@
+import TaskDetails from "@/components/project/task-details";
 import Home from "@/pages/home";
-import TaskDetails from "@/pages/home/components/task-details";
+import Login from "./login";
+import NotFound from "./not-found";
+import Register from "./register";
 
-export { Home, TaskDetails };
+export { Home, Login, NotFound, Register, TaskDetails };

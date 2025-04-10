@@ -1,6 +1,6 @@
-interface Column {
+interface IColumn {
    id: string;
    title: string;
-   tasks: Task[];
+   tasks: ITask[];
    created_at: string;
 }

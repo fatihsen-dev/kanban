@@ -1,0 +1,1 @@
+type IUserAuthResponse = IUser;

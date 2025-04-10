@@ -6,7 +6,7 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useDataStore from "@/store/data";
+import { useProjectStore } from "@/store/project-store";
 import { Ellipsis } from "lucide-react";
 import { useRef } from "react";
 import { useDrag } from "react-dnd";
@@ -21,7 +21,7 @@ interface TaskProps {
 export const TypeName = "TASK";
 
 export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) {
-   const store = useDataStore();
+   const store = useProjectStore();
 
    const ref = useRef<HTMLDivElement>(null);
 

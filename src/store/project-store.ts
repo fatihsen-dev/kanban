@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import { initialData } from "./dummy-data";
 
 interface State {
-   data: Column[];
+   data: IColumn[];
    task: {
       modal: {
          isOpen: boolean;
@@ -13,9 +13,9 @@ interface State {
          close: () => void;
          open: () => void;
       };
-      add: (column_id: Column["id"], task: Omit<Task, "id" | "created_at">) => void;
-      remove: (task_id: Task["id"]) => void;
-      move: (prev_column_id: Column["id"], new_column_id: Column["id"], task: Task) => void;
+      add: (column_id: IColumn["id"], task: Omit<ITask, "id" | "created_at">) => void;
+      remove: (task_id: ITask["id"]) => void;
+      move: (prev_column_id: IColumn["id"], new_column_id: IColumn["id"], task: ITask) => void;
    };
    column: {
       modal: {
@@ -24,12 +24,12 @@ interface State {
          close: () => void;
          open: () => void;
       };
-      add: (column: Omit<Column, "id" | "created_at">) => void;
-      remove: (column_id: Column["id"]) => void;
+      add: (column: Omit<IColumn, "id" | "created_at">) => void;
+      remove: (column_id: IColumn["id"]) => void;
    };
 }
 
-const useDataStore = create<State>()(
+export const useProjectStore = create<State>()(
    devtools(
       (set) => ({
          data: initialData,
@@ -73,7 +73,7 @@ const useDataStore = create<State>()(
                   (state) => ({
                      data: state.data.map((column) => {
                         if (column.id === column_id) {
-                           const newTask: Task = {
+                           const newTask: ITask = {
                               id: uuidv4(),
                               ...task,
                               created_at: new Date().toISOString(),
@@ -198,5 +198,3 @@ const useDataStore = create<State>()(
       }
    )
 );
-
-export default useDataStore;

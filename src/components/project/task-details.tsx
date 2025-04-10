@@ -8,7 +8,7 @@ import {
    DrawerHeader,
    DrawerTitle,
 } from "@/components/ui/drawer";
-import useTask from "@/hooks/useTask";
+import useTask from "@/hooks/use-task";
 
 import { useEffect, useState } from "react";
 
@@ -21,6 +21,7 @@ export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
    const { getById } = useTask();
    const [isOpen, setIsOpen] = useState(false);
    const [task, setTask] = useState<Task | null>(null);
+
    useEffect(() => {
       if (taskId) {
          const task = getById(taskId);
