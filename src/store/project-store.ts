@@ -18,6 +18,7 @@ interface State {
       getById: (column_id: IColumn["id"]) => IColumn | null;
       add: (column: Omit<IColumnWithTasks, "id" | "created_at" | "project_id" | "tasks">) => void;
       remove: (column_id: IColumn["id"]) => void;
+      update: (column: Omit<IColumn, "created_at" | "project_id">) => void;
    };
    task: {
       modal: {
@@ -125,6 +126,18 @@ export const useProjectStore = create<State>()(
                   undefined,
                   "remove-column"
                );
+            },
+            update: (column) => {
+               set((state) => {
+                  if (!state.project) return state;
+
+                  return {
+                     project: {
+                        ...state.project,
+                        columns: state.project.columns.map((c) => (c.id === column.id ? { ...c, ...column } : c)),
+                     },
+                  };
+               });
             },
          },
          task: {

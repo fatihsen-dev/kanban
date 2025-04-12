@@ -7,7 +7,9 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useColumn from "@/hooks/use-column";
 import useTask from "@/hooks/use-task";
+import useToast from "@/hooks/use-toast";
 import { useProjectStore } from "@/store/project-store";
 import { Ellipsis } from "lucide-react";
 import { useDrop } from "react-dnd";
@@ -20,7 +22,9 @@ interface ColumnProps {
 }
 
 export default function Column({ column, taskId, setTaskId }: ColumnProps) {
+   const { toast } = useToast();
    const { move } = useTask();
+   const { remove } = useColumn();
    const store = useProjectStore();
 
    const [{ isOver }, drop] = useDrop(() => ({
@@ -32,6 +36,14 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
          isOver: monitor.isOver(),
       }),
    }));
+
+   const removeColumn = () => {
+      remove(column.id, (error) => {
+         if (error) {
+            toast(error, "error");
+         }
+      });
+   };
 
    return (
       <div
@@ -49,10 +61,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                   <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                      <DropdownMenuLabel>Column</DropdownMenuLabel>
                      <DropdownMenuSeparator />
-                     <DropdownMenuItem
-                        className='cursor-pointer'
-                        variant='destructive'
-                        onClick={() => store.column.remove(column.id)}>
+                     <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeColumn}>
                         Delete
                      </DropdownMenuItem>
                   </DropdownMenuContent>
