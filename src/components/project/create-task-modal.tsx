@@ -10,10 +10,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useTask from "@/hooks/use-task";
+import useToast from "@/hooks/use-toast";
 import { useProjectStore } from "@/store/project-store";
 import { useEffect, useState } from "react";
 
 export default function CreateTaskModal() {
+   const { toast } = useToast();
+   const { create } = useTask();
    const store = useProjectStore();
 
    const [title, setTitle] = useState("");
@@ -21,10 +25,16 @@ export default function CreateTaskModal() {
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (title.trim() === "" || !store.task.modal.column_id) return;
+      if (!store.project) return;
 
-      store.task.add(store.task.modal.column_id, { title });
-      setTitle("");
-      store.task.modal.close();
+      create({ title, column_id: store.task.modal.column_id, project_id: store.project.id }, (error) => {
+         if (error) {
+            toast(error, "error");
+         } else {
+            setTitle("");
+            store.task.modal.close();
+         }
+      });
    };
 
    useEffect(() => {

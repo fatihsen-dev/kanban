@@ -7,24 +7,26 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useTask from "@/hooks/use-task";
 import { useProjectStore } from "@/store/project-store";
 import { Ellipsis } from "lucide-react";
 import { useDrop } from "react-dnd";
 import Task, { TypeName } from "./task";
 
 interface ColumnProps {
-   column: Column;
+   column: IColumnWithTasks;
    taskId: string | null;
    setTaskId: (taskId: string | null) => void;
 }
 
 export default function Column({ column, taskId, setTaskId }: ColumnProps) {
+   const { move } = useTask();
    const store = useProjectStore();
 
    const [{ isOver }, drop] = useDrop(() => ({
       accept: TypeName,
-      drop: ({ column_id, ...task }: Task & { column_id: string }) => {
-         store.task.move(column_id, column.id, task);
+      drop: (task: ITask) => {
+         move(task.column_id, column.id, task);
       },
       collect: (monitor) => ({
          isOver: monitor.isOver(),
@@ -39,7 +41,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
          }`}>
          <div className='flex flex-col w-full'>
             <div className='w-full flex items-center justify-between gap-2'>
-               <h2 className='text-lg font-bold'>{column.title}</h2>
+               <h2 className='text-lg font-bold'>{column.name}</h2>
                <DropdownMenu>
                   <DropdownMenuTrigger className='cursor-pointer'>
                      <Ellipsis className='w-full! h-full!' />
