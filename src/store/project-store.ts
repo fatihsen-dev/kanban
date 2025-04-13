@@ -192,7 +192,10 @@ export const useProjectStore = create<State>()(
                            ...state.project,
                            columns: state.project.columns.map((column: IColumnWithTasks) => {
                               if (column.id === task.column_id) {
-                                 return { ...column, tasks: [...column.tasks, task] };
+                                 return {
+                                    ...column,
+                                    tasks: [...column.tasks.filter((t) => t.id !== task.id), task],
+                                 };
                               }
                               return column;
                            }),

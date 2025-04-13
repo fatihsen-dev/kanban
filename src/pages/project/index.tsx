@@ -3,6 +3,7 @@ import Column from "@/components/project/column";
 import CreateColumnModal from "@/components/project/create-column-modal";
 import CreateTaskModal from "@/components/project/create-task-modal";
 import TaskDetails from "@/components/project/task-details";
+import WsProvider from "@/providers/project/ws-provider";
 import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -37,26 +38,28 @@ export default function Project() {
    }
 
    return (
-      <DndProvider backend={HTML5Backend}>
-         <div className='flex p-4 gap-4 h-screen'>
-            <div
-               className='grid gap-4 h-full'
-               style={{
-                  gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
-               }}>
-               {project?.columns.map((column) => (
-                  <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
-               ))}
+      <WsProvider>
+         <DndProvider backend={HTML5Backend}>
+            <div className='flex p-4 gap-4 h-screen'>
+               <div
+                  className='grid gap-4 h-full'
+                  style={{
+                     gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
+                  }}>
+                  {project?.columns.map((column) => (
+                     <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
+                  ))}
+               </div>
+               <div
+                  onClick={column.modal.toggle}
+                  className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
+                  <Plus size={36} strokeWidth={1.3} />
+               </div>
+               <CreateTaskModal />
+               <CreateColumnModal />
+               <TaskDetails taskId={taskId} setTaskId={setTaskId} />
             </div>
-            <div
-               onClick={column.modal.toggle}
-               className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
-               <Plus size={36} strokeWidth={1.3} />
-            </div>
-            <CreateTaskModal />
-            <CreateColumnModal />
-            <TaskDetails taskId={taskId} setTaskId={setTaskId} />
-         </div>
-      </DndProvider>
+         </DndProvider>
+      </WsProvider>
    );
 }
