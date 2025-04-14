@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -16,9 +15,9 @@ interface State {
          open: () => void;
       };
       getById: (column_id: IColumn["id"]) => IColumn | null;
-      add: (column: Omit<IColumnWithTasks, "id" | "created_at" | "project_id" | "tasks">) => void;
+      add: (column: IColumnWithTasks) => void;
       remove: (column_id: IColumn["id"]) => void;
-      update: (column: Omit<IColumn, "created_at" | "project_id">) => void;
+      update: (column: Partial<IColumn> & Pick<IColumn, "id">) => void;
    };
    task: {
       modal: {
@@ -30,7 +29,7 @@ interface State {
       };
       getById: (task_id: ITask["id"]) => ITask | null;
       add: (task: ITask) => void;
-      update: (task: Omit<ITask, "created_at" | "project_id">) => void;
+      update: (task: Partial<ITask> & Pick<ITask, "id">) => void;
       remove: (task_id: ITask["id"]) => void;
       move: (prev_column_id: IColumn["id"], new_column_id: IColumn["id"], task: ITask) => void;
    };
@@ -92,18 +91,16 @@ export const useProjectStore = create<State>()(
                   (state) => {
                      if (!state.project) return state;
 
-                     const newColumn: IColumnWithTasks = {
-                        id: uuidv4(),
-                        ...column,
-                        project_id: state.project.id,
-                        tasks: [],
-                        created_at: new Date().toISOString(),
-                     };
-
                      return {
                         project: {
                            ...state.project,
-                           columns: [...state.project.columns, newColumn],
+                           columns: [
+                              ...state.project.columns.filter((c) => c.id !== column.id),
+                              {
+                                 ...column,
+                                 tasks: column.tasks ?? [],
+                              },
+                           ],
                         },
                      };
                   },

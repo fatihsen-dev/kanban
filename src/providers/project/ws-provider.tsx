@@ -9,7 +9,7 @@ interface WsProviderProps {
 }
 
 export default function WsProvider({ children }: WsProviderProps) {
-   const { task } = useProjectStore();
+   const { task, column } = useProjectStore();
    const { project_id } = useParams();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
@@ -26,9 +26,24 @@ export default function WsProvider({ children }: WsProviderProps) {
             case "task_created":
                task.add(lastJsonMessage.data as ITask);
                break;
+            case "task_updated":
+               task.update(lastJsonMessage.data as ITask);
+               break;
+            case "task_deleted":
+               task.remove((lastJsonMessage.data as ITask).id);
+               break;
+            case "column_created":
+               column.add(lastJsonMessage.data as IColumnWithTasks);
+               break;
+            case "column_updated":
+               column.update(lastJsonMessage.data as IColumn);
+               break;
+            case "column_deleted":
+               column.remove((lastJsonMessage.data as IColumn).id);
+               break;
          }
       }
-   }, [lastJsonMessage, task]);
+   }, [lastJsonMessage, task, column]);
 
    if (readyState === 1) {
       return <>{children}</>;

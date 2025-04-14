@@ -6,7 +6,7 @@ export default function useColumn() {
 
    const createMutation = useMutation<IColumn, Pick<IColumn, "name" | "project_id">>();
    const updateMutation = useMutation<IColumn, Omit<IColumn, "created_at" | "project_id">>();
-   const removeMutation = useMutation<void, IColumn["id"]>();
+   const removeMutation = useMutation<void, Pick<IColumn, "project_id">>();
 
    const getById = (columnId: IColumn["id"]) => {
       if (!project) return null;
@@ -26,7 +26,10 @@ export default function useColumn() {
          {
             onSuccess: (data) => {
                if (!project) return;
-               columnState.add(data);
+               columnState.add({
+                  tasks: [],
+                  ...data,
+               });
                if (callback) callback();
             },
             onError: (error) => {
@@ -42,7 +45,7 @@ export default function useColumn() {
 
       updateMutation.mutate(
          {
-            url: `/columns/${column.id}`,
+            url: `/columns/${column.id}?project_id=${project.id}`,
             method: "PUT",
             payload: column,
          },
@@ -65,7 +68,7 @@ export default function useColumn() {
 
       removeMutation.mutate(
          {
-            url: `/columns/${columnId}`,
+            url: `/columns/${columnId}?project_id=${project.id}`,
             method: "DELETE",
          },
          {
