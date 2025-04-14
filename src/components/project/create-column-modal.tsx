@@ -10,26 +10,34 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useColumn from "@/hooks/use-column";
+import useToast from "@/hooks/use-toast";
 import { useProjectStore } from "@/store/project-store";
 import { useEffect, useState } from "react";
 
 export default function CreateColumnModal() {
+   const { create } = useColumn();
    const store = useProjectStore();
-
-   const [title, setTitle] = useState("");
+   const { toast } = useToast();
+   const [name, setName] = useState("");
 
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (title.trim() === "") return;
+      if (name.trim() === "" || !store.project) return;
 
-      store.column.add({ title, tasks: [] });
-      setTitle("");
-      store.column.modal.close();
+      create({ name, project_id: store.project.id }, (error) => {
+         if (error) {
+            toast(error, "error");
+         } else {
+            setName("");
+            store.column.modal.close();
+         }
+      });
    };
 
    useEffect(() => {
       if (!store.column.modal.isOpen) {
-         setTitle("");
+         setName("");
       }
    }, [store.column.modal.isOpen]);
 
@@ -46,7 +54,7 @@ export default function CreateColumnModal() {
                      <Label htmlFor='name' className='sr-only'>
                         Name
                      </Label>
-                     <Input id='title' value={title} onInput={(e) => setTitle(e.currentTarget.value)} />
+                     <Input id='name' value={name} onInput={(e) => setName(e.currentTarget.value)} />
                   </div>
                </div>
                <DialogFooter className='sm:justify-end'>
@@ -55,7 +63,7 @@ export default function CreateColumnModal() {
                         Close
                      </Button>
                   </DialogClose>
-                  <Button disabled={title.trim() === ""} type='submit'>
+                  <Button disabled={name.trim() === ""} type='submit'>
                      Create
                   </Button>
                </DialogFooter>

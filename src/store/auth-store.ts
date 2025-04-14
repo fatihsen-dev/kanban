@@ -8,9 +8,14 @@ interface State {
 }
 
 export const useAuthStore = create<State>()(
-   devtools((set) => ({
-      status: "loading",
-      user: null,
-      setUser: (user) => set({ user, status: user ? "authenticated" : "unauthenticated" }),
-   }))
+   devtools(
+      (set) => ({
+         status: "loading",
+         user: null,
+         setUser: (user) => set({ user, status: user ? "authenticated" : "unauthenticated" }),
+      }),
+      {
+         name: "auth-store",
+      }
+   )
 );

@@ -7,29 +7,43 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useColumn from "@/hooks/use-column";
+import useTask from "@/hooks/use-task";
+import useToast from "@/hooks/use-toast";
 import { useProjectStore } from "@/store/project-store";
 import { Ellipsis } from "lucide-react";
 import { useDrop } from "react-dnd";
 import Task, { TypeName } from "./task";
 
 interface ColumnProps {
-   column: Column;
+   column: IColumnWithTasks;
    taskId: string | null;
    setTaskId: (taskId: string | null) => void;
 }
 
 export default function Column({ column, taskId, setTaskId }: ColumnProps) {
+   const { toast } = useToast();
+   const { move } = useTask();
+   const { remove } = useColumn();
    const store = useProjectStore();
 
    const [{ isOver }, drop] = useDrop(() => ({
       accept: TypeName,
-      drop: ({ column_id, ...task }: Task & { column_id: string }) => {
-         store.task.move(column_id, column.id, task);
+      drop: (task: ITask) => {
+         move(task.column_id, column.id, task);
       },
       collect: (monitor) => ({
          isOver: monitor.isOver(),
       }),
    }));
+
+   const removeColumn = () => {
+      remove(column.id, (error) => {
+         if (error) {
+            toast(error, "error");
+         }
+      });
+   };
 
    return (
       <div
@@ -39,7 +53,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
          }`}>
          <div className='flex flex-col w-full'>
             <div className='w-full flex items-center justify-between gap-2'>
-               <h2 className='text-lg font-bold'>{column.title}</h2>
+               <h2 className='text-lg font-bold'>{column.name}</h2>
                <DropdownMenu>
                   <DropdownMenuTrigger className='cursor-pointer'>
                      <Ellipsis className='w-full! h-full!' />
@@ -47,10 +61,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                   <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                      <DropdownMenuLabel>Column</DropdownMenuLabel>
                      <DropdownMenuSeparator />
-                     <DropdownMenuItem
-                        className='cursor-pointer'
-                        variant='destructive'
-                        onClick={() => store.column.remove(column.id)}>
+                     <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeColumn}>
                         Delete
                      </DropdownMenuItem>
                   </DropdownMenuContent>

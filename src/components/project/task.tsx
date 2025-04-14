@@ -6,13 +6,14 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useProjectStore } from "@/store/project-store";
+import useTask from "@/hooks/use-task";
+import useToast from "@/hooks/use-toast";
 import { Ellipsis } from "lucide-react";
 import { useRef } from "react";
 import { useDrag } from "react-dnd";
 
 interface TaskProps {
-   task: Task;
+   task: ITask;
    column_id: string;
    taskId: string | null;
    setTaskId: (taskId: string | null) => void;
@@ -21,7 +22,8 @@ interface TaskProps {
 export const TypeName = "TASK";
 
 export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) {
-   const store = useProjectStore();
+   const { toast } = useToast();
+   const { remove } = useTask();
 
    const ref = useRef<HTMLDivElement>(null);
 
@@ -32,6 +34,14 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
          isDragging: monitor.isDragging(),
       }),
    }));
+
+   const removeTask = () => {
+      remove(task.id, (error) => {
+         if (error) {
+            toast(error, "error");
+         }
+      });
+   };
 
    drag(ref);
 
@@ -54,10 +64,7 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
                <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                   <DropdownMenuLabel>Column</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                     className='cursor-pointer'
-                     variant='destructive'
-                     onClick={() => store.task.remove(task.id)}>
+                  <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeTask}>
                      Delete
                   </DropdownMenuItem>
                </DropdownMenuContent>

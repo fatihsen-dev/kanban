@@ -1,5 +1,5 @@
 import Loading from "@/components/loading";
-import { Home, Login, NotFound, Register } from "@/pages";
+import { Home, Login, NotFound, Project, Register } from "@/pages";
 import AuthProvider from "@/providers/auth-provider";
 import { createBrowserRouter } from "react-router";
 import { authLoader, protectedLoader } from "./loaders";
@@ -11,6 +11,16 @@ const router = createBrowserRouter([
       element: (
          <AuthProvider>
             <Home />
+         </AuthProvider>
+      ),
+      HydrateFallback: Loading,
+   },
+   {
+      path: "/:project_id",
+      loader: protectedLoader,
+      element: (
+         <AuthProvider>
+            <Project />
          </AuthProvider>
       ),
       HydrateFallback: Loading,

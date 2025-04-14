@@ -20,7 +20,7 @@ interface TaskDetailsProps {
 export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
    const { getById } = useTask();
    const [isOpen, setIsOpen] = useState(false);
-   const [task, setTask] = useState<Task | null>(null);
+   const [task, setTask] = useState<ITask | null>(null);
 
    useEffect(() => {
       if (taskId) {
@@ -30,7 +30,7 @@ export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
             setIsOpen(true);
          }
       }
-   }, [taskId]);
+   }, [getById, taskId]);
 
    return (
       <Drawer
