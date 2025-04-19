@@ -7,7 +7,7 @@ export default function useTask() {
    const { task: taskState, project } = useProjectStore();
 
    const createMutation = useMutation<ITask, Pick<ITask, "title" | "column_id" | "project_id">>();
-   const updateMutation = useMutation<ITask, Omit<ITask, "created_at" | "project_id">>();
+   const updateMutation = useMutation<ITask, Partial<ITask> & Pick<ITask, "id">>();
    const removeMutation = useMutation<void, Pick<ITask, "project_id">>();
 
    const getById = (taskId: ITask["id"]) => {
@@ -21,7 +21,7 @@ export default function useTask() {
 
       createMutation.mutate(
          {
-            url: "/tasks",
+            url: `/projects/${project.id}/tasks`,
             method: "POST",
             payload: task,
          },
@@ -39,12 +39,12 @@ export default function useTask() {
       );
    };
 
-   const update = (task: Omit<ITask, "created_at" | "project_id">, callback?: (error?: string) => void) => {
+   const update = (task: Partial<ITask> & Pick<ITask, "id">, callback?: (error?: string) => void) => {
       if (!project) return;
 
       updateMutation.mutate(
          {
-            url: `/tasks/${task.id}?project_id=${project.id}`,
+            url: `/projects/${project.id}/tasks/${task.id}`,
             method: "PUT",
             payload: task,
          },
@@ -75,7 +75,7 @@ export default function useTask() {
 
       update(
          {
-            ...task,
+            id: task.id,
             column_id: new_column_id,
          },
          callback
@@ -87,7 +87,7 @@ export default function useTask() {
 
       removeMutation.mutate(
          {
-            url: `/tasks/${taskId}?project_id=${project.id}`,
+            url: `/projects/${project.id}/tasks/${taskId}`,
             method: "DELETE",
          },
          {

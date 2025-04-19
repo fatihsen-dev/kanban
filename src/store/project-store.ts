@@ -10,9 +10,11 @@ interface State {
    column: {
       modal: {
          isOpen: boolean;
-         toggle: () => void;
+         name: "create" | "edit" | null;
+         column_id: IColumn["id"] | null;
+         toggle: (name?: "create" | "edit", column_id?: IColumn["id"]) => void;
          close: () => void;
-         open: () => void;
+         open: (name?: "create" | "edit", column_id?: IColumn["id"]) => void;
       };
       getById: (column_id: IColumn["id"]) => IColumn | null;
       add: (column: IColumnWithTasks) => void;
@@ -22,10 +24,11 @@ interface State {
    task: {
       modal: {
          isOpen: boolean;
+         name: "create" | "edit" | null;
          column_id: string | null;
-         toggle: (column_id: string | null) => void;
+         toggle: (column_id: string | null, name?: "create" | "edit") => void;
          close: () => void;
-         open: () => void;
+         open: (name?: "create" | "edit") => void;
       };
       getById: (task_id: ITask["id"]) => ITask | null;
       add: (task: ITask) => void;
@@ -52,12 +55,19 @@ export const useProjectStore = create<State>()(
          column: {
             modal: {
                isOpen: false,
-               toggle: () => {
+               name: null,
+               column_id: null,
+               toggle: (name, column_id) => {
                   set(
                      (state) => ({
                         column: {
                            ...state.column,
-                           modal: { ...state.column.modal, isOpen: !state.column.modal.isOpen },
+                           modal: {
+                              ...state.column.modal,
+                              isOpen: !state.column.modal.isOpen,
+                              name: name ?? null,
+                              column_id: column_id ?? null,
+                           },
                         },
                      }),
                      undefined,
@@ -67,16 +77,24 @@ export const useProjectStore = create<State>()(
                close: () => {
                   set(
                      (state) => ({
-                        column: { ...state.column, modal: { ...state.column.modal, isOpen: false } },
+                        column: { ...state.column, modal: { ...state.column.modal, isOpen: false, name: null } },
                      }),
                      undefined,
                      "close-column-modal"
                   );
                },
-               open: () => {
+               open: (name, column_id) => {
                   set(
                      (state) => ({
-                        column: { ...state.column, modal: { ...state.column.modal, isOpen: true } },
+                        column: {
+                           ...state.column,
+                           modal: {
+                              ...state.column.modal,
+                              isOpen: true,
+                              name: name ?? null,
+                              column_id: column_id ?? null,
+                           },
+                        },
                      }),
                      undefined,
                      "open-column-modal"
@@ -141,12 +159,18 @@ export const useProjectStore = create<State>()(
             modal: {
                isOpen: false,
                column_id: null,
-               toggle: (column_id) => {
+               name: null,
+               toggle: (column_id, name) => {
                   set(
                      (state) => ({
                         task: {
                            ...state.task,
-                           modal: { ...state.task.modal, column_id, isOpen: !state.task.modal.isOpen },
+                           modal: {
+                              ...state.task.modal,
+                              column_id,
+                              isOpen: !state.task.modal.isOpen,
+                              name: name ?? null,
+                           },
                         },
                      }),
                      undefined,
@@ -156,16 +180,19 @@ export const useProjectStore = create<State>()(
                close: () => {
                   set(
                      (state) => ({
-                        task: { ...state.task, modal: { ...state.task.modal, isOpen: false } },
+                        task: { ...state.task, modal: { ...state.task.modal, isOpen: false, name: null } },
                      }),
                      undefined,
                      "close-task-modal"
                   );
                },
-               open: () => {
+               open: (name) => {
                   set(
                      (state) => ({
-                        task: { ...state.task, modal: { ...state.task.modal, isOpen: true } },
+                        task: {
+                           ...state.task,
+                           modal: { ...state.task.modal, isOpen: true, name: name ?? null },
+                        },
                      }),
                      undefined,
                      "open-task-modal"

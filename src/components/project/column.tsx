@@ -45,6 +45,14 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
       });
    };
 
+   const openCreateTaskModal = () => {
+      store.task.modal.toggle(column.id, "create");
+   };
+
+   const openEditColumnModal = () => {
+      store.column.modal.open("edit", column.id);
+   };
+
    return (
       <div
          ref={drop as unknown as React.RefObject<HTMLDivElement>}
@@ -61,6 +69,9 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                   <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                      <DropdownMenuLabel>Column</DropdownMenuLabel>
                      <DropdownMenuSeparator />
+                     <DropdownMenuItem className='cursor-pointer' onClick={openEditColumnModal}>
+                        Edit
+                     </DropdownMenuItem>
                      <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeColumn}>
                         Delete
                      </DropdownMenuItem>
@@ -75,7 +86,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
             ))}
          </div>
          <div className='flex justify-between items-center border-t border-gray-300 pt-4'>
-            <Button size='lg' variant='outline' className='w-full' onClick={() => store.task.modal.toggle(column.id)}>
+            <Button size='lg' variant='outline' className='w-full' onClick={openCreateTaskModal}>
                Add Task
             </Button>
          </div>

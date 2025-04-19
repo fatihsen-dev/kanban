@@ -19,7 +19,7 @@ export default function useColumn() {
 
       createMutation.mutate(
          {
-            url: "/columns",
+            url: `/projects/${project.id}/columns`,
             method: "POST",
             payload: column,
          },
@@ -45,7 +45,7 @@ export default function useColumn() {
 
       updateMutation.mutate(
          {
-            url: `/columns/${column.id}?project_id=${project.id}`,
+            url: `/projects/${project.id}/columns/${column.id}`,
             method: "PUT",
             payload: column,
          },
@@ -68,7 +68,7 @@ export default function useColumn() {
 
       removeMutation.mutate(
          {
-            url: `/columns/${columnId}?project_id=${project.id}`,
+            url: `/projects/${project.id}/columns/${columnId}`,
             method: "DELETE",
          },
          {
