@@ -62,21 +62,19 @@ export default function useTask() {
       );
    };
 
-   const move = (prev_column_id: IColumn["id"], new_column_id: IColumn["id"], task: ITask) => {
+   const move = (task: ITask) => {
       if (!project) return;
 
       const callback = (error?: string) => {
          if (error) {
             toast(error, "error");
-         } else {
-            taskState.move(prev_column_id, new_column_id, task);
          }
       };
 
       update(
          {
             id: task.id,
-            column_id: new_column_id,
+            column_id: task.column_id,
          },
          callback
       );

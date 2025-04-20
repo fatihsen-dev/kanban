@@ -29,6 +29,9 @@ export default function WsProvider({ children }: WsProviderProps) {
             case "task_updated":
                task.update(lastJsonMessage.data as ITask);
                break;
+            case "task_moved":
+               task.move(lastJsonMessage.data as ITask);
+               break;
             case "task_deleted":
                task.remove((lastJsonMessage.data as ITask).id);
                break;

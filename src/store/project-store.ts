@@ -34,7 +34,7 @@ interface State {
       add: (task: ITask) => void;
       update: (task: Partial<ITask> & Pick<ITask, "id">) => void;
       remove: (task_id: ITask["id"]) => void;
-      move: (prev_column_id: IColumn["id"], new_column_id: IColumn["id"], task: ITask) => void;
+      move: (task: ITask) => void;
    };
 }
 
@@ -248,37 +248,34 @@ export const useProjectStore = create<State>()(
                   "remove-task"
                );
             },
-            move: (prev_column_id, new_column_id, task) => {
-               if (prev_column_id === new_column_id) return;
-
+            move: (task) => {
                set(
                   (state) => {
                      if (!state.project) return state;
 
-                     let taskToMove: ITask | null = null;
-
-                     const columnsWithoutTask = state.project.columns.map((column) => {
-                        if (column.id === prev_column_id) {
-                           const foundTask = column.tasks.find((t) => t.id === task.id);
-                           if (foundTask) {
-                              taskToMove = { ...foundTask, column_id: new_column_id };
-                              return { ...column, tasks: column.tasks.filter((t) => t.id !== task.id) };
-                           }
-                        }
-                        return column;
-                     });
-
-                     const columnsWithTaskMoved = columnsWithoutTask.map((column) => {
-                        if (column.id === new_column_id && taskToMove) {
-                           return { ...column, tasks: [...column.tasks, taskToMove] };
-                        }
-                        return column;
-                     });
+                     const column = state.project.columns.find((column) => column.tasks.some((t) => t.id === task.id));
+                     if (!column) return state;
+                     const ts = column.tasks.find((t) => t.id === task.id);
+                     if (!ts) return state;
 
                      return {
                         project: {
                            ...state.project,
-                           columns: columnsWithTaskMoved,
+                           columns: state.project.columns.map((column) => {
+                              if (column.id === ts.column_id) {
+                                 return {
+                                    ...column,
+                                    tasks: column.tasks.filter((t) => t.id !== ts.id),
+                                 };
+                              }
+                              if (column.id === task.column_id) {
+                                 return {
+                                    ...column,
+                                    tasks: [...column.tasks, { ...ts, ...task }],
+                                 };
+                              }
+                              return column;
+                           }),
                         },
                      };
                   },

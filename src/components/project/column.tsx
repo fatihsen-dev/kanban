@@ -30,7 +30,8 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
    const [{ isOver }, drop] = useDrop(() => ({
       accept: TypeName,
       drop: (task: ITask) => {
-         move(task.column_id, column.id, task);
+         if (task.column_id === column.id) return;
+         move({ ...task, column_id: column.id });
       },
       collect: (monitor) => ({
          isOver: monitor.isOver(),
