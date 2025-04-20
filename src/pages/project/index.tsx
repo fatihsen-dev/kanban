@@ -7,6 +7,7 @@ import TaskModal from "@/components/project/task-modal";
 import WsProvider from "@/providers/project/ws-provider";
 import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { Plus } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useEffect } from "react";
@@ -19,7 +20,7 @@ export default function Project() {
    const [taskId, setTaskId] = useQueryState("taskId");
    const { project, setProject, column } = useProjectStore();
 
-   const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithColumns>, IErrorResponse>({
+   const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithColumns>, AxiosError<IErrorResponse>>({
       queryKey: [`projects/${project_id}`],
       retry: false,
    });
@@ -31,7 +32,7 @@ export default function Project() {
    }, [data, setProject]);
 
    if (error) {
-      return <div>Error: {error.message}</div>;
+      return <div>Error: {error.response?.data.message}</div>;
    }
 
    if (isLoading || !project) {

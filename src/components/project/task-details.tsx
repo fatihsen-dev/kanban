@@ -1,3 +1,4 @@
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import {
    Drawer,
@@ -8,8 +9,10 @@ import {
    DrawerHeader,
    DrawerTitle,
 } from "@/components/ui/drawer";
-import useTask from "@/hooks/use-task";
-
+import useToast from "@/hooks/use-toast";
+import { useProjectStore } from "@/store/project-store";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface TaskDetailsProps {
@@ -18,19 +21,35 @@ interface TaskDetailsProps {
 }
 
 export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
-   const { getById } = useTask();
+   const { project } = useProjectStore();
    const [isOpen, setIsOpen] = useState(false);
    const [task, setTask] = useState<ITask | null>(null);
+   const { toast } = useToast();
+
+   const { data, isLoading, error } = useQuery<ISuccessResponse<ITask>, AxiosError<IErrorResponse>>({
+      queryKey: [`projects/${project?.id}/tasks/${taskId}`],
+      retry: false,
+      enabled: !!taskId,
+   });
 
    useEffect(() => {
-      if (taskId) {
-         const task = getById(taskId);
-         if (task) {
-            setTask(task);
-            setIsOpen(true);
-         }
+      if (data?.success) {
+         setTask(data.data!);
+         setIsOpen(true);
       }
-   }, [getById, taskId]);
+   }, [data]);
+
+   useEffect(() => {
+      if (error) {
+         toast(error.response?.data.message || "Something went wrong", "error");
+      }
+   }, [error, toast]);
+
+   if (!taskId) return null;
+
+   if (isLoading) {
+      return <Loading />;
+   }
 
    return (
       <Drawer
