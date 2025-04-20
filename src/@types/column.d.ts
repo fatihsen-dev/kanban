@@ -1,6 +1,7 @@
 interface IColumn {
    id: string;
    name: string;
+   color: string | null;
    project_id: string;
    created_at: string;
 }

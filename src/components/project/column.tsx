@@ -56,12 +56,15 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
    return (
       <div
          ref={drop as unknown as React.RefObject<HTMLDivElement>}
+         style={column.color ? { borderColor: `${column.color}` } : {}}
          className={`bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 min-w-96 h-full flex flex-col gap-4 transition-colors ${
             isOver ? "bg-gray-200" : ""
          }`}>
          <div className='flex flex-col w-full'>
             <div className='w-full flex items-center justify-between gap-2'>
-               <h2 className='text-lg font-bold'>{column.name}</h2>
+               <h2 style={column.color ? { color: column.color } : {}} className='text-lg font-bold'>
+                  {column.name}
+               </h2>
                <DropdownMenu>
                   <DropdownMenuTrigger className='cursor-pointer'>
                      <Ellipsis className='w-full! h-full!' />

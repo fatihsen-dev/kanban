@@ -5,7 +5,7 @@ export default function useColumn() {
    const { column: columnState, project } = useProjectStore();
 
    const createMutation = useMutation<IColumn, Pick<IColumn, "name" | "project_id">>();
-   const updateMutation = useMutation<IColumn, Omit<IColumn, "created_at" | "project_id">>();
+   const updateMutation = useMutation<IColumn, Partial<IColumn> & { id: IColumn["id"] }>();
    const removeMutation = useMutation<void, Pick<IColumn, "project_id">>();
 
    const getById = (columnId: IColumn["id"]) => {
@@ -40,7 +40,7 @@ export default function useColumn() {
       );
    };
 
-   const update = (column: Omit<IColumn, "created_at" | "project_id">, callback?: (error?: string) => void) => {
+   const update = (column: Partial<IColumn> & { id: IColumn["id"] }, callback?: (error?: string) => void) => {
       if (!project) return;
 
       updateMutation.mutate(

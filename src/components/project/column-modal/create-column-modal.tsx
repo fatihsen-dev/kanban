@@ -8,7 +8,7 @@ import {
    DialogHeader,
    DialogTitle,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useColumn from "@/hooks/use-column";
 import useToast from "@/hooks/use-toast";
@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { colors } from ".";
 
 export default function CreateColumnModal() {
    const { create } = useColumn();
@@ -28,6 +29,7 @@ export default function CreateColumnModal() {
       resolver: zodResolver(createColumnSchema),
       defaultValues: {
          name: "",
+         color: colors[0].color,
       },
    });
 
@@ -67,6 +69,36 @@ export default function CreateColumnModal() {
                            <FormControl>
                               <div className='relative'>
                                  <Input placeholder='Name' {...field} />
+                              </div>
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name='color'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Color</FormLabel>
+                           <FormControl>
+                              <div className='grid grid-cols-7 justify-items-center gap-2 mr-auto'>
+                                 {colors.map((color) => (
+                                    <div
+                                       key={color.color}
+                                       onClick={() => field.onChange(color.color)}
+                                       style={{
+                                          backgroundColor: `${color.color}50`,
+                                          borderColor: color.color,
+                                       }}
+                                       className='w-8 aspect-square rounded-md border-2 flex items-center justify-center border-dashed cursor-pointer'>
+                                       {field.value === color.color && (
+                                          <div
+                                             className='w-3 aspect-square rounded'
+                                             style={{ backgroundColor: color.color }}></div>
+                                       )}
+                                    </div>
+                                 ))}
                               </div>
                            </FormControl>
                            <FormMessage />
