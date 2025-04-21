@@ -2,6 +2,7 @@ import Loading from "@/components/loading";
 import Column from "@/components/project/column";
 import ColumnModal from "@/components/project/column-modal";
 import Navbar from "@/components/project/navbar";
+import SettingsModal from "@/components/project/setttings-modal";
 import TaskDetails from "@/components/project/task-details";
 import TaskModal from "@/components/project/task-modal";
 import WsProvider from "@/providers/project/ws-provider";
@@ -10,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Plus } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useParams } from "react-router";
@@ -19,6 +20,7 @@ export default function Project() {
    const { project_id } = useParams();
    const [taskId, setTaskId] = useQueryState("taskId");
    const { project, setProject, column } = useProjectStore();
+   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
    const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithColumns>, AxiosError<IErrorResponse>>({
       queryKey: [`projects/${project_id}`],
@@ -47,7 +49,7 @@ export default function Project() {
       <WsProvider>
          <DndProvider backend={HTML5Backend}>
             <div className='flex flex-col p-4 gap-4 h-screen'>
-               <Navbar />
+               <Navbar setIsSettingsModalOpen={setIsSettingsModalOpen} />
                <div className='flex gap-4 flex-1 overflow-y-auto'>
                   <div
                      className='grid gap-4 h-full'
@@ -66,6 +68,7 @@ export default function Project() {
                   <TaskModal />
                   <ColumnModal />
                   <TaskDetails taskId={taskId} setTaskId={setTaskId} />
+                  <SettingsModal isOpen={isSettingsModalOpen} onOpenChange={setIsSettingsModalOpen} />
                </div>
             </div>
          </DndProvider>

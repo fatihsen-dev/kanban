@@ -12,7 +12,7 @@ const users: User[] = [
    { id: "6", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "online" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ setIsSettingsModalOpen }: { setIsSettingsModalOpen: (isOpen: boolean) => void }) {
    const { project } = useProjectStore();
 
    return (
@@ -22,7 +22,7 @@ export default function Navbar() {
          </div>
          <div className='flex items-center gap-3'>
             <AvatarGroup users={users} />
-            <Button variant='outline' size='icon'>
+            <Button variant='outline' size='icon' onClick={() => setIsSettingsModalOpen(true)}>
                <Settings />
             </Button>
          </div>
