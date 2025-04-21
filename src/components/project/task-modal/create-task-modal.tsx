@@ -10,51 +10,53 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useColumn from "@/hooks/use-column";
+import useTask from "@/hooks/use-task";
 import useToast from "@/hooks/use-toast";
 import { useProjectStore } from "@/store/project-store";
 import { useEffect, useState } from "react";
 
-export default function CreateColumnModal() {
-   const { create } = useColumn();
-   const store = useProjectStore();
+export default function CreateTaskModal() {
    const { toast } = useToast();
-   const [name, setName] = useState("");
+   const { create } = useTask();
+   const store = useProjectStore();
+
+   const [title, setTitle] = useState("");
 
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (name.trim() === "" || !store.project) return;
+      if (title.trim() === "" || !store.task.modal.column_id) return;
+      if (!store.project) return;
 
-      create({ name, project_id: store.project.id }, (error) => {
+      create({ title, column_id: store.task.modal.column_id, project_id: store.project.id }, (error) => {
          if (error) {
             toast(error, "error");
          } else {
-            setName("");
-            store.column.modal.close();
+            setTitle("");
+            store.task.modal.close();
          }
       });
    };
 
    useEffect(() => {
-      if (!store.column.modal.isOpen) {
-         setName("");
+      if (!store.task.modal.isOpen) {
+         setTitle("");
       }
-   }, [store.column.modal.isOpen]);
+   }, [store.task.modal.isOpen]);
 
    return (
-      <Dialog open={store.column.modal.isOpen} onOpenChange={store.column.modal.toggle}>
+      <Dialog open={store.task.modal.isOpen} onOpenChange={store.task.modal.close}>
          <DialogContent className='sm:max-w-md'>
             <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                <DialogHeader>
-                  <DialogTitle>Create Column</DialogTitle>
-                  <DialogDescription>Create a new column</DialogDescription>
+                  <DialogTitle>Create Task</DialogTitle>
+                  <DialogDescription>Create a new task</DialogDescription>
                </DialogHeader>
                <div className='flex items-center space-x-2'>
                   <div className='grid flex-1 gap-2'>
-                     <Label htmlFor='name' className='sr-only'>
-                        Name
+                     <Label htmlFor='title' className='sr-only'>
+                        Title
                      </Label>
-                     <Input id='name' value={name} onInput={(e) => setName(e.currentTarget.value)} />
+                     <Input id='title' value={title} onInput={(e) => setTitle(e.currentTarget.value)} />
                   </div>
                </div>
                <DialogFooter className='sm:justify-end'>
@@ -63,7 +65,7 @@ export default function CreateColumnModal() {
                         Close
                      </Button>
                   </DialogClose>
-                  <Button disabled={name.trim() === ""} type='submit'>
+                  <Button disabled={title.trim() === ""} type='submit'>
                      Create
                   </Button>
                </DialogFooter>

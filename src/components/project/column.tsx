@@ -30,7 +30,8 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
    const [{ isOver }, drop] = useDrop(() => ({
       accept: TypeName,
       drop: (task: ITask) => {
-         move(task.column_id, column.id, task);
+         if (task.column_id === column.id) return;
+         move({ ...task, column_id: column.id });
       },
       collect: (monitor) => ({
          isOver: monitor.isOver(),
@@ -45,15 +46,26 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
       });
    };
 
+   const openCreateTaskModal = () => {
+      store.task.modal.toggle(column.id, "create");
+   };
+
+   const openEditColumnModal = () => {
+      store.column.modal.open("edit", column.id);
+   };
+
    return (
       <div
          ref={drop as unknown as React.RefObject<HTMLDivElement>}
+         style={column.color ? { borderColor: `${column.color}` } : {}}
          className={`bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 min-w-96 h-full flex flex-col gap-4 transition-colors ${
             isOver ? "bg-gray-200" : ""
          }`}>
          <div className='flex flex-col w-full'>
             <div className='w-full flex items-center justify-between gap-2'>
-               <h2 className='text-lg font-bold'>{column.name}</h2>
+               <h2 style={column.color ? { color: column.color } : {}} className='text-lg font-bold'>
+                  {column.name}
+               </h2>
                <DropdownMenu>
                   <DropdownMenuTrigger className='cursor-pointer'>
                      <Ellipsis className='w-full! h-full!' />
@@ -61,6 +73,9 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                   <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                      <DropdownMenuLabel>Column</DropdownMenuLabel>
                      <DropdownMenuSeparator />
+                     <DropdownMenuItem className='cursor-pointer' onClick={openEditColumnModal}>
+                        Edit
+                     </DropdownMenuItem>
                      <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeColumn}>
                         Delete
                      </DropdownMenuItem>
@@ -75,7 +90,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
             ))}
          </div>
          <div className='flex justify-between items-center border-t border-gray-300 pt-4'>
-            <Button size='lg' variant='outline' className='w-full' onClick={() => store.task.modal.toggle(column.id)}>
+            <Button size='lg' variant='outline' className='w-full' onClick={openCreateTaskModal}>
                Add Task
             </Button>
          </div>

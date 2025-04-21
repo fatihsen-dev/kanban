@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useTask from "@/hooks/use-task";
 import useToast from "@/hooks/use-toast";
+import formatDate from "@/lib/format-date";
 import { Ellipsis } from "lucide-react";
 import { useRef } from "react";
 import { useDrag } from "react-dnd";
@@ -48,21 +49,17 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
    return (
       <div
          ref={ref}
-         className={`bg-white border-2 border-dashed border-gray-300 rounded-md p-4 transition-colors ${
+         className={`bg-white border-2 border-dashed border-gray-300 rounded-md p-2 px-3 transition-colors ${
             isDragging ? "opacity-50 cursor-move" : "opacity-100 cursor-move"
          }`}>
          <div className='flex items-center gap-2 justify-between'>
-            <button
-               onClick={() => setTaskId(task.id)}
-               className={`hover:underline cursor-pointer ${taskId === task.id ? "text-blue-500" : ""}`}>
-               {task.title}
-            </button>
+            <span className='text-xs text-gray-500'>{formatDate(task.created_at)}</span>
             <DropdownMenu>
                <DropdownMenuTrigger className='cursor-pointer'>
-                  <Ellipsis className='w-full! h-full!' />
+                  <Ellipsis className='w-full! h-full! text-gray-500' />
                </DropdownMenuTrigger>
                <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
-                  <DropdownMenuLabel>Column</DropdownMenuLabel>
+                  <DropdownMenuLabel>Task</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeTask}>
                      Delete
@@ -70,6 +67,11 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
                </DropdownMenuContent>
             </DropdownMenu>
          </div>
+         <button
+            onClick={() => setTaskId(task.id)}
+            className={`hover:underline cursor-pointer ${taskId === task.id ? "text-blue-500" : ""}`}>
+            {task.title}
+         </button>
       </div>
    );
 }

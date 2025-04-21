@@ -4,15 +4,18 @@ import { devtools } from "zustand/middleware";
 interface State {
    project: IProjectWithColumns | null;
    projects: IProject[];
+   setProjects: (projects: IProject[]) => void;
    setProject: (project: IProjectWithColumns) => void;
    addProject: (project: IProject) => void;
    removeProject: (project_id: IProject["id"]) => void;
    column: {
       modal: {
          isOpen: boolean;
-         toggle: () => void;
+         name: "create" | "edit" | null;
+         column_id: IColumn["id"] | null;
+         toggle: (name?: "create" | "edit", column_id?: IColumn["id"]) => void;
          close: () => void;
-         open: () => void;
+         open: (name?: "create" | "edit", column_id?: IColumn["id"]) => void;
       };
       getById: (column_id: IColumn["id"]) => IColumn | null;
       add: (column: IColumnWithTasks) => void;
@@ -22,16 +25,17 @@ interface State {
    task: {
       modal: {
          isOpen: boolean;
+         name: "create" | "edit" | null;
          column_id: string | null;
-         toggle: (column_id: string | null) => void;
+         toggle: (column_id: string | null, name?: "create" | "edit") => void;
          close: () => void;
-         open: () => void;
+         open: (name?: "create" | "edit") => void;
       };
       getById: (task_id: ITask["id"]) => ITask | null;
       add: (task: ITask) => void;
       update: (task: Partial<ITask> & Pick<ITask, "id">) => void;
       remove: (task_id: ITask["id"]) => void;
-      move: (prev_column_id: IColumn["id"], new_column_id: IColumn["id"], task: ITask) => void;
+      move: (task: ITask) => void;
    };
 }
 
@@ -43,6 +47,9 @@ export const useProjectStore = create<State>()(
          setProject: (project: IProjectWithColumns) => {
             set(() => ({ project }));
          },
+         setProjects: (projects: IProject[]) => {
+            set(() => ({ projects }));
+         },
          addProject: (project: IProject) => {
             set((state) => ({ projects: [...state.projects, project] }));
          },
@@ -52,12 +59,19 @@ export const useProjectStore = create<State>()(
          column: {
             modal: {
                isOpen: false,
-               toggle: () => {
+               name: null,
+               column_id: null,
+               toggle: (name, column_id) => {
                   set(
                      (state) => ({
                         column: {
                            ...state.column,
-                           modal: { ...state.column.modal, isOpen: !state.column.modal.isOpen },
+                           modal: {
+                              ...state.column.modal,
+                              isOpen: !state.column.modal.isOpen,
+                              name: name ?? null,
+                              column_id: column_id ?? null,
+                           },
                         },
                      }),
                      undefined,
@@ -67,16 +81,24 @@ export const useProjectStore = create<State>()(
                close: () => {
                   set(
                      (state) => ({
-                        column: { ...state.column, modal: { ...state.column.modal, isOpen: false } },
+                        column: { ...state.column, modal: { ...state.column.modal, isOpen: false, name: null } },
                      }),
                      undefined,
                      "close-column-modal"
                   );
                },
-               open: () => {
+               open: (name, column_id) => {
                   set(
                      (state) => ({
-                        column: { ...state.column, modal: { ...state.column.modal, isOpen: true } },
+                        column: {
+                           ...state.column,
+                           modal: {
+                              ...state.column.modal,
+                              isOpen: true,
+                              name: name ?? null,
+                              column_id: column_id ?? null,
+                           },
+                        },
                      }),
                      undefined,
                      "open-column-modal"
@@ -141,12 +163,18 @@ export const useProjectStore = create<State>()(
             modal: {
                isOpen: false,
                column_id: null,
-               toggle: (column_id) => {
+               name: null,
+               toggle: (column_id, name) => {
                   set(
                      (state) => ({
                         task: {
                            ...state.task,
-                           modal: { ...state.task.modal, column_id, isOpen: !state.task.modal.isOpen },
+                           modal: {
+                              ...state.task.modal,
+                              column_id,
+                              isOpen: !state.task.modal.isOpen,
+                              name: name ?? null,
+                           },
                         },
                      }),
                      undefined,
@@ -156,16 +184,19 @@ export const useProjectStore = create<State>()(
                close: () => {
                   set(
                      (state) => ({
-                        task: { ...state.task, modal: { ...state.task.modal, isOpen: false } },
+                        task: { ...state.task, modal: { ...state.task.modal, isOpen: false, name: null } },
                      }),
                      undefined,
                      "close-task-modal"
                   );
                },
-               open: () => {
+               open: (name) => {
                   set(
                      (state) => ({
-                        task: { ...state.task, modal: { ...state.task.modal, isOpen: true } },
+                        task: {
+                           ...state.task,
+                           modal: { ...state.task.modal, isOpen: true, name: name ?? null },
+                        },
                      }),
                      undefined,
                      "open-task-modal"
@@ -221,37 +252,34 @@ export const useProjectStore = create<State>()(
                   "remove-task"
                );
             },
-            move: (prev_column_id, new_column_id, task) => {
-               if (prev_column_id === new_column_id) return;
-
+            move: (task) => {
                set(
                   (state) => {
                      if (!state.project) return state;
 
-                     let taskToMove: ITask | null = null;
-
-                     const columnsWithoutTask = state.project.columns.map((column) => {
-                        if (column.id === prev_column_id) {
-                           const foundTask = column.tasks.find((t) => t.id === task.id);
-                           if (foundTask) {
-                              taskToMove = { ...foundTask, column_id: new_column_id };
-                              return { ...column, tasks: column.tasks.filter((t) => t.id !== task.id) };
-                           }
-                        }
-                        return column;
-                     });
-
-                     const columnsWithTaskMoved = columnsWithoutTask.map((column) => {
-                        if (column.id === new_column_id && taskToMove) {
-                           return { ...column, tasks: [...column.tasks, taskToMove] };
-                        }
-                        return column;
-                     });
+                     const column = state.project.columns.find((column) => column.tasks.some((t) => t.id === task.id));
+                     if (!column) return state;
+                     const ts = column.tasks.find((t) => t.id === task.id);
+                     if (!ts) return state;
 
                      return {
                         project: {
                            ...state.project,
-                           columns: columnsWithTaskMoved,
+                           columns: state.project.columns.map((column) => {
+                              if (column.id === ts.column_id) {
+                                 return {
+                                    ...column,
+                                    tasks: column.tasks.filter((t) => t.id !== ts.id),
+                                 };
+                              }
+                              if (column.id === task.column_id) {
+                                 return {
+                                    ...column,
+                                    tasks: [...column.tasks, { ...ts, ...task }],
+                                 };
+                              }
+                              return column;
+                           }),
                         },
                      };
                   },
