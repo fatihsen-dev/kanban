@@ -48,7 +48,7 @@ export default function Project() {
          <DndProvider backend={HTML5Backend}>
             <div className='flex flex-col p-4 gap-4 h-screen'>
                <Navbar />
-               <div className='flex gap-4 flex-1'>
+               <div className='flex gap-4 flex-1 overflow-y-auto'>
                   <div
                      className='grid gap-4 h-full'
                      style={{

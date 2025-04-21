@@ -1,4 +1,5 @@
 import Loading from "@/components/loading";
+import { useAuthStore } from "@/store/auth-store";
 import { useProjectStore } from "@/store/project-store";
 import { useEffect } from "react";
 import { useParams } from "react-router";
@@ -11,9 +12,10 @@ interface WsProviderProps {
 export default function WsProvider({ children }: WsProviderProps) {
    const { task, column } = useProjectStore();
    const { project_id } = useParams();
+   const { token } = useAuthStore();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
-      `${import.meta.env.VITE_WS_URL}/ws/${project_id}`,
+      `${import.meta.env.VITE_WS_URL}/ws/${project_id}?token=${token}`,
       {
          share: true,
          shouldReconnect: () => false,

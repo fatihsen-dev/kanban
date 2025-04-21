@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@/hooks/use-mutation";
 import useToast from "@/hooks/use-toast";
 import { registerSchema } from "@/schemas/register-schema";
+import { useAuthStore } from "@/store/auth-store";
 import { Lock, Mail, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router";
@@ -17,10 +18,12 @@ import { z } from "zod";
 export default function SignInForm() {
    const navigate = useNavigate();
    const { toast } = useToast();
+   const { setToken } = useAuthStore();
 
    const registerMutation = useMutation<IUserRegisterResponse, Pick<IUser, "name" | "email" | "password">>({
       onSuccess: (data) => {
          localStorage.setItem("token", data.token);
+         setToken(data.token);
          toast("Register successful", "success");
          navigate("/");
       },

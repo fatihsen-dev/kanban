@@ -9,11 +9,14 @@ interface AuthProviderProps {
 
 export default function AuthProvider({ children }: AuthProviderProps) {
    const { authUser } = useLoaderData();
-   const { setUser, status } = useAuthStore();
+   const { setUser, status, setToken } = useAuthStore();
 
    useEffect(() => {
       if (authUser) {
          setUser(authUser);
+         setToken(localStorage.getItem("token") || null);
+      } else {
+         setToken(null);
       }
    }, [authUser]);
 
