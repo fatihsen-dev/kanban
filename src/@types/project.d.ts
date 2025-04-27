@@ -1,9 +1,8 @@
-interface IProject {
-   id: string;
+interface IProject extends IBase {
    name: string;
-   created_at: string;
 }
 
-interface IProjectWithColumns extends IProject {
+interface IProjectWithDetails extends IProject {
    columns: IColumnWithTasks[];
+   members: IProjectMember[];
 }
