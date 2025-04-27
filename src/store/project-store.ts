@@ -2,10 +2,10 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 interface State {
-   project: IProjectWithColumns | null;
+   project: IProjectWithDetails | null;
    projects: IProject[];
    setProjects: (projects: IProject[]) => void;
-   setProject: (project: IProjectWithColumns) => void;
+   setProject: (project: IProjectWithDetails) => void;
    addProject: (project: IProject) => void;
    removeProject: (project_id: IProject["id"]) => void;
    column: {
@@ -44,7 +44,7 @@ export const useProjectStore = create<State>()(
       (set, get) => ({
          projects: [],
          project: null,
-         setProject: (project: IProjectWithColumns) => {
+         setProject: (project: IProjectWithDetails) => {
             set(() => ({ project }));
          },
          setProjects: (projects: IProject[]) => {

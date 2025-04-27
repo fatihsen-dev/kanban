@@ -1,9 +1,7 @@
-interface IColumn {
-   id: string;
+interface IColumn extends IBase {
    name: string;
    color: string | null;
-   project_id: string;
-   created_at: string;
+   project_id: IProject["id"];
 }
 
 interface IColumnWithTasks extends IColumn {

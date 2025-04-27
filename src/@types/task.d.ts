@@ -1,7 +1,5 @@
-interface ITask {
-   id: string;
+interface ITask extends IBase {
    title: string;
-   column_id: string;
-   project_id: string;
-   created_at: string;
+   column_id: IColumn["id"];
+   project_id: IProject["id"];
 }
