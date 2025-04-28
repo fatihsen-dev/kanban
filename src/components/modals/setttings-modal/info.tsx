@@ -21,6 +21,10 @@ export default function Info() {
                   <td className='pl-4'>{project?.columns.reduce((acc, column) => acc + column.tasks.length, 0)}</td>
                </tr>
                <tr>
+                  <td>Members Size: </td>
+                  <td className='pl-4'>{project?.members.length}</td>
+               </tr>
+               <tr>
                   <td>Created At: </td>
                   <td className='pl-4'>{formatDate(project?.created_at)}</td>
                </tr>
