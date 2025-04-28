@@ -13,23 +13,39 @@ import { Input } from "@/components/ui/input";
 import useColumn from "@/hooks/use-column";
 import useToast from "@/hooks/use-toast";
 import { createColumnSchema } from "@/schemas/column/create-column-schema";
+import { useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { colors } from ".";
+
+export const columnColors = [
+   {
+      color: "#fb2c36",
+   },
+   {
+      color: "#00c951",
+   },
+   {
+      color: "#2b7fff",
+   },
+   {
+      color: "#ad46ff",
+   },
+];
 
 export default function CreateColumnModal() {
    const { create } = useColumn();
    const store = useProjectStore();
    const { toast } = useToast();
+   const { setIsOpen, isOpen } = useModalStore();
 
    const form = useForm({
       resolver: zodResolver(createColumnSchema),
       defaultValues: {
          name: "",
-         color: colors[0].color,
+         color: columnColors[0].color,
       },
    });
 
@@ -40,20 +56,20 @@ export default function CreateColumnModal() {
          if (error) {
             toast(error, "error");
          } else {
-            store.column.modal.close();
             form.reset();
+            setIsOpen(false, null);
          }
       });
    };
 
    useEffect(() => {
-      if (!store.column.modal.isOpen) {
+      if (!isOpen) {
          form.reset();
       }
-   }, [store.column.modal.isOpen, form]);
+   }, [isOpen, form]);
 
    return (
-      <Dialog open={store.column.modal.isOpen} onOpenChange={store.column.modal.close}>
+      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false, null)}>
          <DialogContent className='sm:max-w-md'>
             <Form {...form}>
                <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -83,7 +99,7 @@ export default function CreateColumnModal() {
                            <FormLabel>Color</FormLabel>
                            <FormControl>
                               <div className='grid grid-cols-7 justify-items-center gap-2 mr-auto'>
-                                 {colors.map((color) => (
+                                 {columnColors.map((color) => (
                                     <div
                                        key={color.color}
                                        onClick={() => field.onChange(color.color)}

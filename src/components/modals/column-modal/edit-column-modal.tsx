@@ -13,27 +13,29 @@ import { Input } from "@/components/ui/input";
 import useColumn from "@/hooks/use-column";
 import useToast from "@/hooks/use-toast";
 import { createColumnSchema } from "@/schemas/column/create-column-schema";
+import { useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { colors } from ".";
+import { columnColors } from "./create-column-modal";
 
 export default function EditColumnModal() {
    const [column, setColumn] = useState<IColumn | null>(null);
    const { getById, update } = useColumn();
    const store = useProjectStore();
    const { toast } = useToast();
+   const { setIsOpen, data, isOpen } = useModalStore();
 
    useEffect(() => {
-      if (!store.column.modal.isOpen) return;
-      const columnId = store.column.modal.column_id;
-      if (!columnId) return;
+      if (!isOpen) return;
+      const { column_id } = data as { column_id: string };
+      if (!column_id) return;
 
-      const column = getById(columnId);
+      const column = getById(column_id);
       setColumn(column);
-   }, [store.column.modal, getById]);
+   }, [isOpen, data, getById]);
 
    const form = useForm({
       resolver: zodResolver(createColumnSchema),
@@ -43,29 +45,29 @@ export default function EditColumnModal() {
       },
    });
 
-   const onSubmit = async (data: z.infer<typeof createColumnSchema>) => {
+   const onSubmit = async (values: z.infer<typeof createColumnSchema>) => {
       if (!store.project) return;
-      const columnId = store.column.modal.column_id;
-      if (!columnId) return;
+      const { column_id } = data as { column_id: string };
+      if (!column_id) return;
 
-      update({ ...data, id: columnId }, (error) => {
+      update({ ...values, id: column_id }, (error) => {
          if (error) {
             toast(error, "error");
          } else {
-            store.column.modal.close();
+            setIsOpen(false, null);
             form.reset();
          }
       });
    };
 
    useEffect(() => {
-      if (!store.column.modal.isOpen) {
+      if (!isOpen) {
          form.reset();
       }
-   }, [store.column.modal.isOpen, form]);
+   }, [isOpen, form]);
 
    return (
-      <Dialog open={store.column.modal.isOpen} onOpenChange={store.column.modal.close}>
+      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false, null)}>
          <DialogContent className='sm:max-w-md'>
             <Form {...form}>
                <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -96,7 +98,7 @@ export default function EditColumnModal() {
                            <FormLabel>Color</FormLabel>
                            <FormControl>
                               <div className='grid grid-cols-7 justify-items-center gap-2 mr-auto'>
-                                 {colors.map((color) => (
+                                 {columnColors.map((color) => (
                                     <div
                                        key={color.color}
                                        onClick={() => field.onChange(color.color)}
