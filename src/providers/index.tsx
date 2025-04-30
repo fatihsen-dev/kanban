@@ -1,3 +1,4 @@
+import Modals from "@/components/modals";
 import { QueryProvider } from "@/providers/query-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
@@ -11,6 +12,7 @@ export default function Providers({ children }: ProvidersProps) {
    return (
       <QueryProvider>
          <NuqsAdapter>{children}</NuqsAdapter>
+         <Modals />
          <Toaster position='top-right' reverseOrder={false} />
          <ReactQueryDevtools initialIsOpen={false} />
       </QueryProvider>

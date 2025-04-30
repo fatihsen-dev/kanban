@@ -1,5 +1,6 @@
+import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
-import { Settings } from "lucide-react";
+import { Settings, UserPlus } from "lucide-react";
 import { AvatarGroup, User } from "../ui/avatar-group";
 import { Button } from "../ui/button";
 
@@ -12,8 +13,13 @@ const users: User[] = [
    { id: "6", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "online" },
 ];
 
-export default function Navbar({ setIsSettingsModalOpen }: { setIsSettingsModalOpen: (isOpen: boolean) => void }) {
+export default function Navbar() {
    const { project } = useProjectStore();
+   const { setIsOpen } = useModalStore();
+
+   const openInviteMemberModal = () => {
+      setIsOpen(true, ModalType.INVITE_MEMBER);
+   };
 
    return (
       <div className='flex items-center justify-between border-2 border-dashed border-gray-300 rounded-md px-4 py-2'>
@@ -22,7 +28,10 @@ export default function Navbar({ setIsSettingsModalOpen }: { setIsSettingsModalO
          </div>
          <div className='flex items-center gap-3'>
             <AvatarGroup users={users} />
-            <Button variant='outline' size='icon' onClick={() => setIsSettingsModalOpen(true)}>
+            <Button onClick={openInviteMemberModal} variant='outline' size='icon'>
+               <UserPlus />
+            </Button>
+            <Button variant='outline' size='icon' onClick={() => setIsOpen(true, ModalType.PROJECT_SETTINGS)}>
                <Settings />
             </Button>
          </div>

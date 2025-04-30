@@ -1,17 +1,15 @@
 import Loading from "@/components/loading";
 import Column from "@/components/project/column";
-import ColumnModal from "@/components/project/column-modal";
 import Navbar from "@/components/project/navbar";
-import SettingsModal from "@/components/project/setttings-modal";
 import TaskDetails from "@/components/project/task-details";
-import TaskModal from "@/components/project/task-modal";
 import WsProvider from "@/providers/project/ws-provider";
+import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Plus } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useParams } from "react-router";
@@ -19,10 +17,10 @@ import { useParams } from "react-router";
 export default function Project() {
    const { project_id } = useParams();
    const [taskId, setTaskId] = useQueryState("taskId");
-   const { project, setProject, column } = useProjectStore();
-   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+   const { project, setProject } = useProjectStore();
+   const { setIsOpen } = useModalStore();
 
-   const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithColumns>, AxiosError<IErrorResponse>>({
+   const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithDetails>, AxiosError<IErrorResponse>>({
       queryKey: [`projects/${project_id}`],
       retry: false,
    });
@@ -42,14 +40,14 @@ export default function Project() {
    }
 
    const openCreateColumnModal = () => {
-      column.modal.open("create");
+      setIsOpen(true, ModalType.CREATE_COLUMN);
    };
 
    return (
       <WsProvider>
          <DndProvider backend={HTML5Backend}>
             <div className='flex flex-col p-4 gap-4 h-screen'>
-               <Navbar setIsSettingsModalOpen={setIsSettingsModalOpen} />
+               <Navbar />
                <div className='flex gap-4 flex-1 overflow-y-auto'>
                   <div
                      className='grid gap-4 h-full'
@@ -65,10 +63,7 @@ export default function Project() {
                      className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
                      <Plus size={36} strokeWidth={1.3} />
                   </div>
-                  <TaskModal />
-                  <ColumnModal />
                   <TaskDetails taskId={taskId} setTaskId={setTaskId} />
-                  <SettingsModal isOpen={isSettingsModalOpen} onOpenChange={setIsSettingsModalOpen} />
                </div>
             </div>
          </DndProvider>

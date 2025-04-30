@@ -10,7 +10,7 @@ import {
 import useColumn from "@/hooks/use-column";
 import useTask from "@/hooks/use-task";
 import useToast from "@/hooks/use-toast";
-import { useProjectStore } from "@/store/project-store";
+import { ModalType, useModalStore } from "@/store/modal-store";
 import { Ellipsis } from "lucide-react";
 import { useDrop } from "react-dnd";
 import Task, { TypeName } from "./task";
@@ -25,7 +25,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
    const { toast } = useToast();
    const { move } = useTask();
    const { remove } = useColumn();
-   const store = useProjectStore();
+   const { setIsOpen } = useModalStore();
 
    const [{ isOver }, drop] = useDrop(() => ({
       accept: TypeName,
@@ -47,11 +47,11 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
    };
 
    const openCreateTaskModal = () => {
-      store.task.modal.toggle(column.id, "create");
+      setIsOpen(true, ModalType.CREATE_TASK, { data: { column_id: column.id } });
    };
 
    const openEditColumnModal = () => {
-      store.column.modal.open("edit", column.id);
+      setIsOpen(true, ModalType.EDIT_COLUMN, { data: { column_id: column.id } });
    };
 
    return (

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useTask from "@/hooks/use-task";
 import useToast from "@/hooks/use-toast";
+import { useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { useEffect, useState } from "react";
 
@@ -19,32 +20,36 @@ export default function CreateTaskModal() {
    const { toast } = useToast();
    const { create } = useTask();
    const store = useProjectStore();
+   const { setIsOpen, data, isOpen } = useModalStore();
 
    const [title, setTitle] = useState("");
 
    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (title.trim() === "" || !store.task.modal.column_id) return;
+
+      const { column_id } = data as { column_id: string };
+
+      if (title.trim() === "" || !column_id) return;
       if (!store.project) return;
 
-      create({ title, column_id: store.task.modal.column_id, project_id: store.project.id }, (error) => {
+      create({ title, column_id, project_id: store.project.id }, (error) => {
          if (error) {
             toast(error, "error");
          } else {
             setTitle("");
-            store.task.modal.close();
+            setIsOpen(false, null);
          }
       });
    };
 
    useEffect(() => {
-      if (!store.task.modal.isOpen) {
+      if (!isOpen) {
          setTitle("");
       }
-   }, [store.task.modal.isOpen]);
+   }, [isOpen]);
 
    return (
-      <Dialog open={store.task.modal.isOpen} onOpenChange={store.task.modal.close}>
+      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false, null)}>
          <DialogContent className='sm:max-w-md'>
             <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                <DialogHeader>
