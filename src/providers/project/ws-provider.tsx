@@ -1,3 +1,4 @@
+import { EventName, IWsResponse } from "@/@types/ws-response";
 import Loading from "@/components/loading";
 import { useAuthStore } from "@/store/auth-store";
 import { useProjectStore } from "@/store/project-store";
@@ -25,25 +26,25 @@ export default function WsProvider({ children }: WsProviderProps) {
    useEffect(() => {
       if (lastJsonMessage) {
          switch (lastJsonMessage.name) {
-            case "task_created":
+            case EventName.TaskCreated:
                task.add(lastJsonMessage.data as ITask);
                break;
-            case "task_updated":
+            case EventName.TaskUpdated:
                task.update(lastJsonMessage.data as ITask);
                break;
-            case "task_moved":
+            case EventName.TaskMoved:
                task.move(lastJsonMessage.data as ITask);
                break;
-            case "task_deleted":
+            case EventName.TaskDeleted:
                task.remove((lastJsonMessage.data as ITask).id);
                break;
-            case "column_created":
+            case EventName.ColumnCreated:
                column.add(lastJsonMessage.data as IColumnWithTasks);
                break;
-            case "column_updated":
+            case EventName.ColumnUpdated:
                column.update(lastJsonMessage.data as IColumn);
                break;
-            case "column_deleted":
+            case EventName.ColumnDeleted:
                column.remove((lastJsonMessage.data as IColumn).id);
                break;
          }
