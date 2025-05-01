@@ -2,7 +2,6 @@ import Loading from "@/components/loading";
 import Column from "@/components/project/column";
 import Navbar from "@/components/project/navbar";
 import TaskDetails from "@/components/project/task-details";
-import WsProvider from "@/providers/project/ws-provider";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
@@ -44,29 +43,27 @@ export default function Project() {
    };
 
    return (
-      <WsProvider>
-         <DndProvider backend={HTML5Backend}>
-            <div className='flex flex-col p-4 gap-4 h-screen'>
-               <Navbar />
-               <div className='flex gap-4 flex-1 overflow-y-auto'>
-                  <div
-                     className='grid gap-4 h-full'
-                     style={{
-                        gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
-                     }}>
-                     {project?.columns.map((column) => (
-                        <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
-                     ))}
-                  </div>
-                  <div
-                     onClick={openCreateColumnModal}
-                     className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
-                     <Plus size={36} strokeWidth={1.3} />
-                  </div>
-                  <TaskDetails taskId={taskId} setTaskId={setTaskId} />
+      <DndProvider backend={HTML5Backend}>
+         <div className='flex flex-col p-4 gap-4 h-screen'>
+            <Navbar />
+            <div className='flex gap-4 flex-1 overflow-y-auto'>
+               <div
+                  className='grid gap-4 h-full'
+                  style={{
+                     gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
+                  }}>
+                  {project?.columns.map((column) => (
+                     <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
+                  ))}
                </div>
+               <div
+                  onClick={openCreateColumnModal}
+                  className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
+                  <Plus size={36} strokeWidth={1.3} />
+               </div>
+               <TaskDetails taskId={taskId} setTaskId={setTaskId} />
             </div>
-         </DndProvider>
-      </WsProvider>
+         </div>
+      </DndProvider>
    );
 }

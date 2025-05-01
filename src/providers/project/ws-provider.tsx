@@ -15,7 +15,7 @@ export default function WsProvider({ children }: WsProviderProps) {
    const { token } = useAuthStore();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
-      `${import.meta.env.VITE_WS_URL}/ws/${project_id}?token=${token}`,
+      `${import.meta.env.VITE_WS_URL}/ws?token=${token}${project_id ? `&project_id=${project_id}` : ""}`,
       {
          share: true,
          shouldReconnect: () => false,

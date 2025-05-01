@@ -1,6 +1,7 @@
 import Loading from "@/components/loading";
 import { Home, Login, NotFound, Project, Register } from "@/pages";
 import AuthProvider from "@/providers/auth-provider";
+import WsProvider from "@/providers/project/ws-provider";
 import { createBrowserRouter } from "react-router";
 import { authLoader, protectedLoader } from "./loaders";
 
@@ -10,7 +11,9 @@ const router = createBrowserRouter([
       loader: protectedLoader,
       element: (
          <AuthProvider>
-            <Home />
+            <WsProvider>
+               <Home />
+            </WsProvider>
          </AuthProvider>
       ),
       HydrateFallback: Loading,
@@ -20,7 +23,9 @@ const router = createBrowserRouter([
       loader: protectedLoader,
       element: (
          <AuthProvider>
-            <Project />
+            <WsProvider>
+               <Project />
+            </WsProvider>
          </AuthProvider>
       ),
       HydrateFallback: Loading,
