@@ -2,6 +2,7 @@ import { ModalType, useModalStore } from "@/store/modal-store";
 import CreateColumnModal from "./column-modal/create-column-modal";
 import EditColumnModal from "./column-modal/edit-column-modal";
 import InviteMemberModal from "./invite-member/invite-member-modal";
+import CreateProjectModal from "./project-modal/create-project-modal";
 import SettingsModal from "./setttings-modal";
 import CreateTaskModal from "./task-modal/create-task-modal";
 
@@ -20,6 +21,8 @@ export default function Modals() {
             return <CreateTaskModal />;
          case ModalType.INVITE_MEMBER:
             return <InviteMemberModal />;
+         case ModalType.CREATE_PROJECT:
+            return <CreateProjectModal />;
       }
    };
 

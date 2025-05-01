@@ -13,7 +13,7 @@ interface WsProviderProps {
 export default function WsProvider({ children }: WsProviderProps) {
    const { task, column } = useProjectStore();
    const { project_id } = useParams();
-   const { token } = useAuthStore();
+   const { token, addInvitation } = useAuthStore();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
       `${import.meta.env.VITE_WS_URL}/ws?token=${token}${project_id ? `&project_id=${project_id}` : ""}`,
@@ -47,9 +47,12 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.ColumnDeleted:
                column.remove((lastJsonMessage.data as IColumn).id);
                break;
+            case EventName.InvitationCreated:
+               addInvitation(lastJsonMessage.data as IInvitation);
+               break;
          }
       }
-   }, [lastJsonMessage, task, column]);
+   }, [lastJsonMessage, task, column, addInvitation]);
 
    if (readyState === 1) {
       return <>{children}</>;

@@ -1,7 +1,7 @@
 import Loading from "@/components/loading";
 import { Home, Login, NotFound, Project, Register } from "@/pages";
 import AuthProvider from "@/providers/auth-provider";
-import WsProvider from "@/providers/project/ws-provider";
+import WsProvider from "@/providers/ws-provider";
 import { createBrowserRouter } from "react-router";
 import { authLoader, protectedLoader } from "./loaders";
 

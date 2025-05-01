@@ -9,6 +9,7 @@ export enum EventName {
    TeamCreated = "team.created",
    TeamUpdated = "team.updated",
    TeamDeleted = "team.deleted",
+   InvitationCreated = "invitation.created",
 }
 
 export interface IWsResponse {

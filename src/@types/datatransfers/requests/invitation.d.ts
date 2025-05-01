@@ -3,3 +3,7 @@ interface IInvitationCreateRequest {
    project_id: string;
    message: string | null;
 }
+
+interface IInvitationUpdateStatusRequest {
+   status: IInvitationStatus;
+}

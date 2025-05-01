@@ -7,6 +7,7 @@ export enum ModalType {
    CREATE_TASK = "create-task",
    CREATE_COLUMN = "create-column",
    EDIT_COLUMN = "edit-column",
+   CREATE_PROJECT = "create-project",
 }
 
 interface State {
