@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@/hooks/use-mutation";
 import useToast from "@/hooks/use-toast";
-import { registerSchema } from "@/schemas/register-schema";
+import { registerSchema } from "@/schemas/auth/register-schema";
 import { useAuthStore } from "@/store/auth-store";
 import { Lock, Mail, User } from "lucide-react";
 import { useForm } from "react-hook-form";

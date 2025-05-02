@@ -1,3 +1,4 @@
+import { EventName, IWsResponse } from "@/@types/ws-response";
 import Loading from "@/components/loading";
 import { useAuthStore } from "@/store/auth-store";
 import { useProjectStore } from "@/store/project-store";
@@ -12,10 +13,10 @@ interface WsProviderProps {
 export default function WsProvider({ children }: WsProviderProps) {
    const { task, column } = useProjectStore();
    const { project_id } = useParams();
-   const { token } = useAuthStore();
+   const { token, addInvitation } = useAuthStore();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
-      `${import.meta.env.VITE_WS_URL}/ws/${project_id}?token=${token}`,
+      `${import.meta.env.VITE_WS_URL}/ws?token=${token}${project_id ? `&project_id=${project_id}` : ""}`,
       {
          share: true,
          shouldReconnect: () => false,
@@ -25,30 +26,33 @@ export default function WsProvider({ children }: WsProviderProps) {
    useEffect(() => {
       if (lastJsonMessage) {
          switch (lastJsonMessage.name) {
-            case "task_created":
+            case EventName.TaskCreated:
                task.add(lastJsonMessage.data as ITask);
                break;
-            case "task_updated":
+            case EventName.TaskUpdated:
                task.update(lastJsonMessage.data as ITask);
                break;
-            case "task_moved":
+            case EventName.TaskMoved:
                task.move(lastJsonMessage.data as ITask);
                break;
-            case "task_deleted":
+            case EventName.TaskDeleted:
                task.remove((lastJsonMessage.data as ITask).id);
                break;
-            case "column_created":
+            case EventName.ColumnCreated:
                column.add(lastJsonMessage.data as IColumnWithTasks);
                break;
-            case "column_updated":
+            case EventName.ColumnUpdated:
                column.update(lastJsonMessage.data as IColumn);
                break;
-            case "column_deleted":
+            case EventName.ColumnDeleted:
                column.remove((lastJsonMessage.data as IColumn).id);
+               break;
+            case EventName.InvitationCreated:
+               addInvitation(lastJsonMessage.data as IInvitation);
                break;
          }
       }
-   }, [lastJsonMessage, task, column]);
+   }, [lastJsonMessage, task, column, addInvitation]);
 
    if (readyState === 1) {
       return <>{children}</>;

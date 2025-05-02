@@ -6,7 +6,7 @@ export default function Members() {
    const { project } = useProjectStore();
 
    return (
-      <div>
+      <div className='space-y-2'>
          {project?.members.map((member) => (
             <div key={member.id} className='flex items-center justify-between bg-gray-50 shadow-sm rounded-sm p-2'>
                <span>{member.user.name}</span>

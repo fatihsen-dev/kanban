@@ -13,6 +13,7 @@ import useToast from "@/hooks/use-toast";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { Ellipsis } from "lucide-react";
 import { useDrop } from "react-dnd";
+import RoleGuard from "../role-guard";
 import Task, { TypeName } from "./task";
 
 interface ColumnProps {
@@ -66,21 +67,23 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                <h2 style={column.color ? { color: column.color } : {}} className='text-lg font-bold'>
                   {column.name}
                </h2>
-               <DropdownMenu>
-                  <DropdownMenuTrigger className='cursor-pointer'>
-                     <Ellipsis className='w-full! h-full!' />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
-                     <DropdownMenuLabel>Column</DropdownMenuLabel>
-                     <DropdownMenuSeparator />
-                     <DropdownMenuItem className='cursor-pointer' onClick={openEditColumnModal}>
-                        Edit
-                     </DropdownMenuItem>
-                     <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeColumn}>
-                        Delete
-                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-               </DropdownMenu>
+               <RoleGuard roles={["owner", "admin"]}>
+                  <DropdownMenu>
+                     <DropdownMenuTrigger className='cursor-pointer'>
+                        <Ellipsis className='w-full! h-full!' />
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
+                        <DropdownMenuLabel>Column</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className='cursor-pointer' onClick={openEditColumnModal}>
+                           Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className='cursor-pointer' variant='destructive' onClick={removeColumn}>
+                           Delete
+                        </DropdownMenuItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+               </RoleGuard>
             </div>
             <span className='text-sm text-gray-500'>{column.tasks.length} tasks</span>
          </div>
@@ -89,11 +92,13 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                <Task key={task.id} column_id={column.id} task={task} taskId={taskId} setTaskId={setTaskId} />
             ))}
          </div>
-         <div className='flex justify-between items-center border-t border-gray-300 pt-4'>
-            <Button size='lg' variant='outline' className='w-full' onClick={openCreateTaskModal}>
-               Add Task
-            </Button>
-         </div>
+         <RoleGuard roles={["owner", "admin", "write"]}>
+            <div className='flex justify-between items-center border-t border-gray-300 pt-4'>
+               <Button size='lg' variant='outline' className='w-full' onClick={openCreateTaskModal}>
+                  Add Task
+               </Button>
+            </div>
+         </RoleGuard>
       </div>
    );
 }
