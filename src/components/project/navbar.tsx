@@ -1,6 +1,7 @@
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { Settings, UserPlus } from "lucide-react";
+import RoleGuard from "../role-guard";
 import { AvatarGroup, User } from "../ui/avatar-group";
 import { Button } from "../ui/button";
 
@@ -14,7 +15,7 @@ const users: User[] = [
 ];
 
 export default function Navbar() {
-   const { project } = useProjectStore();
+   const { project, authMember } = useProjectStore();
    const { setIsOpen } = useModalStore();
 
    const openInviteMemberModal = () => {
@@ -28,12 +29,14 @@ export default function Navbar() {
          </div>
          <div className='flex items-center gap-3'>
             <AvatarGroup users={users} />
-            <Button onClick={openInviteMemberModal} variant='outline' size='icon'>
-               <UserPlus />
-            </Button>
-            <Button variant='outline' size='icon' onClick={() => setIsOpen(true, ModalType.PROJECT_SETTINGS)}>
-               <Settings />
-            </Button>
+            <RoleGuard roles={["owner", "admin"]}>
+               <Button onClick={openInviteMemberModal} variant='outline' size='icon'>
+                  <UserPlus />
+               </Button>
+               <Button variant='outline' size='icon' onClick={() => setIsOpen(true, ModalType.PROJECT_SETTINGS)}>
+                  <Settings />
+               </Button>
+            </RoleGuard>
          </div>
       </div>
    );

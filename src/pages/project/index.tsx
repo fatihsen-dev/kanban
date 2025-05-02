@@ -2,6 +2,8 @@ import Loading from "@/components/loading";
 import Column from "@/components/project/column";
 import Navbar from "@/components/project/navbar";
 import TaskDetails from "@/components/project/task-details";
+import RoleGuard from "@/components/role-guard";
+import { useAuthStore } from "@/store/auth-store";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
@@ -15,8 +17,9 @@ import { useParams } from "react-router";
 
 export default function Project() {
    const { project_id } = useParams();
+   const { user } = useAuthStore();
    const [taskId, setTaskId] = useQueryState("taskId");
-   const { project, setProject } = useProjectStore();
+   const { project, setProject, setMember } = useProjectStore();
    const { setIsOpen } = useModalStore();
 
    const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithDetails>, AxiosError<IErrorResponse>>({
@@ -26,9 +29,11 @@ export default function Project() {
 
    useEffect(() => {
       if (data?.success) {
-         setProject(data.data!);
+         const project = data.data!;
+         setProject(project);
+         setMember(project.members.find((member) => member.user.id === user?.id)!);
       }
-   }, [data, setProject]);
+   }, [data, setProject, setMember, user]);
 
    if (error) {
       return <div>Error: {error.response?.data.message}</div>;
@@ -56,11 +61,13 @@ export default function Project() {
                      <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
                   ))}
                </div>
-               <div
-                  onClick={openCreateColumnModal}
-                  className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
-                  <Plus size={36} strokeWidth={1.3} />
-               </div>
+               <RoleGuard roles={["owner", "admin"]}>
+                  <div
+                     onClick={openCreateColumnModal}
+                     className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700'>
+                     <Plus size={36} strokeWidth={1.3} />
+                  </div>
+               </RoleGuard>
                <TaskDetails taskId={taskId} setTaskId={setTaskId} />
             </div>
          </div>
