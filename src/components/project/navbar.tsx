@@ -15,7 +15,7 @@ const users: User[] = [
 ];
 
 export default function Navbar() {
-   const { project, authMember } = useProjectStore();
+   const { project } = useProjectStore();
    const { setIsOpen } = useModalStore();
 
    const openInviteMemberModal = () => {
