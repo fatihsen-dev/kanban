@@ -1,22 +1,28 @@
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { Settings, UserPlus } from "lucide-react";
+import { useMemo } from "react";
 import RoleGuard from "../role-guard";
 import { AvatarGroup, User } from "../ui/avatar-group";
 import { Button } from "../ui/button";
 
-const users: User[] = [
-   { id: "1", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "online" },
-   { id: "2", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "offline" },
-   { id: "3", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "online" },
-   { id: "4", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "offline" },
-   { id: "5", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "offline" },
-   { id: "6", name: "Fatih Sen", image: "https://github.com/fatihsen-dev.png", status: "online" },
-];
-
 export default function Navbar() {
-   const { project } = useProjectStore();
+   const { project, authMember } = useProjectStore();
    const { setIsOpen } = useModalStore();
+
+   const users: User[] = useMemo(
+      () =>
+         project?.members.map((member) => {
+            const status = member.user.id === authMember?.user.id ? "online" : member.user.status ?? "away";
+            return {
+               id: member.user.id,
+               name: member.user.name,
+               image: "",
+               status,
+            };
+         }) ?? [],
+      [project, authMember]
+   );
 
    const openInviteMemberModal = () => {
       setIsOpen(true, ModalType.INVITE_MEMBER);

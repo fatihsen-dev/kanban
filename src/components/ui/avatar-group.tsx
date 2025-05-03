@@ -6,7 +6,7 @@ export interface User {
    id: string;
    name: string;
    image?: string;
-   status?: "online" | "offline";
+   status?: UserStatus;
 }
 
 interface AvatarGroupProps {
@@ -26,9 +26,10 @@ export function AvatarGroup({ users, max = 3, size = "md", className }: AvatarGr
       lg: "h-10 w-10 text-base",
    };
 
-   const statusClasses = {
+   const statusClasses: Record<UserStatus, string> = {
       online: "bg-green-500",
       offline: "bg-red-500",
+      away: "bg-yellow-500",
    };
 
    return (
