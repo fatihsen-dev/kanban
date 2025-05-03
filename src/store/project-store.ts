@@ -208,7 +208,7 @@ export const useProjectStore = create<State>()(
          },
       }),
       {
-         name: "data-store",
+         name: "project-store",
       }
    )
 );
