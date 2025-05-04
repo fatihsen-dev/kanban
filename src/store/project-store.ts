@@ -10,6 +10,10 @@ interface State {
    addProject: (project: IProject) => void;
    removeProject: (project_id: IProject["id"]) => void;
    setMember: (member: IProjectMember) => void;
+   updateMemberByUserId: (
+      user_id: IUser["id"],
+      member: Omit<Partial<IProjectMember>, "user"> & { user: Partial<IProjectMember["user"]> }
+   ) => void;
    column: {
       getById: (column_id: IColumn["id"]) => IColumn | null;
       add: (column: IColumnWithTasks) => void;
@@ -33,6 +37,26 @@ export const useProjectStore = create<State>()(
          authMember: null,
          setMember: (member: IProjectMember) => {
             set({ authMember: member });
+         },
+         updateMemberByUserId: (user_id, member) => {
+            set((state) => {
+               if (!state.project) return state;
+
+               return {
+                  project: {
+                     ...state.project,
+                     members: state.project.members.map((m) =>
+                        m.user.id === user_id
+                           ? {
+                                ...m,
+                                ...member,
+                                user: member.user ? { ...m.user, ...member.user } : m.user,
+                             }
+                           : m
+                     ),
+                  },
+               };
+            });
          },
          setProject: (project: IProjectWithDetails) => {
             set({ project });
@@ -208,7 +232,7 @@ export const useProjectStore = create<State>()(
          },
       }),
       {
-         name: "data-store",
+         name: "project-store",
       }
    )
 );

@@ -27,13 +27,29 @@ export default function Project() {
       retry: false,
    });
 
+   const { data: onlineUsersData } = useQuery<ISuccessResponse<IUserStatusResponse[]>, AxiosError<IErrorResponse>>({
+      queryKey: [`projects/${data?.data?.id}/members/online`],
+      retry: false,
+      enabled: !!data?.success,
+   });
+
    useEffect(() => {
-      if (data?.success) {
+      if (data?.success && onlineUsersData?.success) {
          const project = data.data!;
-         setProject(project);
+         const onlineUsers = onlineUsersData.data!;
+         setProject({
+            ...project,
+            members: project.members.map((member) => ({
+               ...member,
+               user: {
+                  ...member.user,
+                  status: onlineUsers.find((m) => m.id === member.user.id)?.status ?? "away",
+               },
+            })),
+         });
          setMember(project.members.find((member) => member.user.id === user?.id)!);
       }
-   }, [data, setProject, setMember, user]);
+   }, [data, setProject, setMember, user, onlineUsersData]);
 
    if (error) {
       return <div>Error: {error.response?.data.message}</div>;

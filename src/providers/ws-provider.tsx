@@ -2,6 +2,7 @@ import { EventName, IWsResponse } from "@/@types/ws-response";
 import Loading from "@/components/loading";
 import { useAuthStore } from "@/store/auth-store";
 import { useProjectStore } from "@/store/project-store";
+import { useWsStore } from "@/store/ws-store";
 import { useEffect } from "react";
 import { useParams } from "react-router";
 import useWebSocket from "react-use-websocket";
@@ -11,7 +12,8 @@ interface WsProviderProps {
 }
 
 export default function WsProvider({ children }: WsProviderProps) {
-   const { task, column } = useProjectStore();
+   const { setLastMessage } = useWsStore();
+   const { task, column, updateMemberByUserId } = useProjectStore();
    const { project_id } = useParams();
    const { token, addInvitation } = useAuthStore();
 
@@ -25,6 +27,7 @@ export default function WsProvider({ children }: WsProviderProps) {
 
    useEffect(() => {
       if (lastJsonMessage) {
+         setLastMessage(lastJsonMessage);
          switch (lastJsonMessage.name) {
             case EventName.TaskCreated:
                task.add(lastJsonMessage.data as ITask);
@@ -50,9 +53,16 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.InvitationCreated:
                addInvitation(lastJsonMessage.data as IInvitation);
                break;
+            case EventName.UserStatusUpdated:
+               updateMemberByUserId((lastJsonMessage.data as IUserStatusResponse).id, {
+                  user: {
+                     status: (lastJsonMessage.data as IUserStatusResponse).status,
+                  },
+               });
+               break;
          }
       }
-   }, [lastJsonMessage, task, column, addInvitation]);
+   }, [lastJsonMessage, task, column, addInvitation, setLastMessage, updateMemberByUserId]);
 
    if (readyState === 1) {
       return <>{children}</>;
