@@ -1,7 +1,8 @@
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
-import { Settings, UserPlus } from "lucide-react";
+import { Home, Settings, UserPlus } from "lucide-react";
 import { useMemo } from "react";
+import { NavLink } from "react-router";
 import RoleGuard from "../role-guard";
 import { AvatarGroup, User } from "../ui/avatar-group";
 import { Button } from "../ui/button";
@@ -29,8 +30,13 @@ export default function Navbar() {
    };
 
    return (
-      <div className='flex items-center justify-between border-2 border-dashed border-gray-300 rounded-md px-4 py-2'>
+      <div className='flex items-center justify-between border-2 border-dashed border-gray-300 rounded-md px-2.5 py-2'>
          <div className='flex items-center gap-2'>
+            <NavLink to='/'>
+               <Button variant='outline' size='icon'>
+                  <Home />
+               </Button>
+            </NavLink>
             <h1 className='text-xl font-bold'>{project?.name}</h1>
          </div>
          <div className='flex items-center gap-3'>

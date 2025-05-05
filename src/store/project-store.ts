@@ -27,6 +27,9 @@ interface State {
       remove: (task_id: ITask["id"]) => void;
       move: (task: ITask) => void;
    };
+   team: {
+      add: (team: IProjectTeam) => void;
+   };
 }
 
 export const useProjectStore = create<State>()(
@@ -228,6 +231,17 @@ export const useProjectStore = create<State>()(
                   undefined,
                   "update-task"
                );
+            },
+         },
+         team: {
+            add: (team) => {
+               set((state) => {
+                  if (!state.project) return state;
+
+                  return {
+                     project: { ...state.project, teams: [...state.project.teams, team] },
+                  };
+               });
             },
          },
       }),

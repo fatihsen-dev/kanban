@@ -5,4 +5,5 @@ interface IProject extends IBase {
 interface IProjectWithDetails extends IProject {
    columns: IColumnWithTasks[];
    members: IProjectMember[];
+   teams: IProjectTeam[];
 }

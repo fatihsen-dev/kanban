@@ -13,7 +13,7 @@ interface WsProviderProps {
 
 export default function WsProvider({ children }: WsProviderProps) {
    const { setLastMessage } = useWsStore();
-   const { task, column, updateMemberByUserId } = useProjectStore();
+   const { task, column, updateMemberByUserId, team } = useProjectStore();
    const { project_id } = useParams();
    const { token, addInvitation } = useAuthStore();
 
@@ -53,6 +53,9 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.InvitationCreated:
                addInvitation(lastJsonMessage.data as IInvitation);
                break;
+            case EventName.TeamCreated:
+               team.add(lastJsonMessage.data as IProjectTeam);
+               break;
             case EventName.UserStatusUpdated:
                updateMemberByUserId((lastJsonMessage.data as IUserStatusResponse).id, {
                   user: {
@@ -62,7 +65,7 @@ export default function WsProvider({ children }: WsProviderProps) {
                break;
          }
       }
-   }, [lastJsonMessage, task, column, addInvitation, setLastMessage, updateMemberByUserId]);
+   }, [lastJsonMessage, task, column, addInvitation, setLastMessage, updateMemberByUserId, team]);
 
    if (readyState === 1) {
       return <>{children}</>;
