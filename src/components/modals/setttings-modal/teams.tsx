@@ -1,7 +1,7 @@
+import RoleSelect from "@/components/project/role-select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useTeam from "@/hooks/use-team";
 import useToast from "@/hooks/use-toast";
 import { useProjectStore } from "@/store/project-store";
@@ -51,16 +51,7 @@ export default function Teams() {
          <div className='flex flex-col gap-2'>
             <div className='flex gap-2'>
                <Input placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} />
-               <Select value={role} onValueChange={(value) => setRole(value as IProjectAccessRole)}>
-                  <SelectTrigger className='w-[180px]'>
-                     <SelectValue placeholder='Theme' />
-                  </SelectTrigger>
-                  <SelectContent>
-                     <SelectItem value='admin'>Admin</SelectItem>
-                     <SelectItem value='read'>Read</SelectItem>
-                     <SelectItem value='write'>Write</SelectItem>
-                  </SelectContent>
-               </Select>
+               <RoleSelect role={role} setRole={setRole} />
             </div>
             <Button onClick={createTeam}>Create Team</Button>
          </div>
