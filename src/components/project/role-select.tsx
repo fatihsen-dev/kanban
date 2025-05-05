@@ -4,12 +4,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface RoleSelectProps {
    role: IProjectAccessRole;
    setRole: (role: IProjectAccessRole) => void;
+   onChange?: (role: IProjectAccessRole) => void;
    className?: string;
 }
 
-export default function RoleSelect({ role, setRole, className }: RoleSelectProps) {
+export default function RoleSelect({ role, setRole, onChange, className }: RoleSelectProps) {
+   const handleChange = (value: string) => {
+      setRole(value as IProjectAccessRole);
+      if (onChange) onChange(value as IProjectAccessRole);
+   };
+
    return (
-      <Select value={role} onValueChange={(value) => setRole(value as IProjectAccessRole)}>
+      <Select value={role} onValueChange={handleChange}>
          <SelectTrigger className={cn("w-[180px]", className)}>
             <SelectValue placeholder='Theme' />
          </SelectTrigger>

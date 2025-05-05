@@ -61,6 +61,11 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.ProjectMemberCreated:
                member.add(lastJsonMessage.data as IProjectMember);
                break;
+            case EventName.ProjectMemberUpdated:
+               member.update(
+                  lastJsonMessage.data as Partial<IProjectMember> & Pick<IProjectMember, "id">
+               );
+               break;
             case EventName.UserStatusUpdated:
                updateMemberByUserId((lastJsonMessage.data as IUserStatusResponse).id, {
                   user: {

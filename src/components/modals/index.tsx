@@ -1,4 +1,6 @@
+import useAuth from "@/hooks/user-auth";
 import { ModalType, useModalStore } from "@/store/modal-store";
+import { useEffect } from "react";
 import CreateColumnModal from "./column-modal/create-column-modal";
 import EditColumnModal from "./column-modal/edit-column-modal";
 import InviteMemberModal from "./invite-member/invite-member-modal";
@@ -7,7 +9,12 @@ import SettingsModal from "./setttings-modal";
 import CreateTaskModal from "./task-modal/create-task-modal";
 
 export default function Modals() {
-   const { type } = useModalStore();
+   const { authMember } = useAuth();
+   const { type, setIsOpen } = useModalStore();
+
+   useEffect(() => {
+      setIsOpen(false, null);
+   }, [authMember, setIsOpen]);
 
    const renderModal = () => {
       switch (type) {

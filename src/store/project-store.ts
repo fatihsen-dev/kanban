@@ -4,12 +4,10 @@ import { devtools } from "zustand/middleware";
 interface State {
    project: IProjectWithDetails | null;
    projects: IProject[];
-   authMember: IProjectMember | null;
    setProjects: (projects: IProject[]) => void;
    setProject: (project: IProjectWithDetails) => void;
    addProject: (project: IProject) => void;
    removeProject: (project_id: IProject["id"]) => void;
-   setMember: (member: IProjectMember) => void;
    updateMemberByUserId: (
       user_id: IUser["id"],
       member: Omit<Partial<IProjectMember>, "user"> & { user: Partial<IProjectMember["user"]> }
@@ -32,6 +30,7 @@ interface State {
    };
    member: {
       add: (member: IProjectMember) => void;
+      update: (member: Partial<IProjectMember> & Pick<IProjectMember, "id">) => void;
    };
 }
 
@@ -40,10 +39,6 @@ export const useProjectStore = create<State>()(
       (set, get) => ({
          projects: [],
          project: null,
-         authMember: null,
-         setMember: (member: IProjectMember) => {
-            set({ authMember: member });
-         },
          updateMemberByUserId: (user_id, member) => {
             set((state) => {
                if (!state.project) return state;
@@ -249,24 +244,56 @@ export const useProjectStore = create<State>()(
          },
          team: {
             add: (team) => {
-               set((state) => {
-                  if (!state.project) return state;
+               set(
+                  (state) => {
+                     if (!state.project) return state;
 
-                  return {
-                     project: { ...state.project, teams: [...state.project.teams, team] },
-                  };
-               });
+                     return {
+                        project: { ...state.project, teams: [...state.project.teams, team] },
+                     };
+                  },
+                  undefined,
+                  "add-team"
+               );
             },
          },
          member: {
             add: (member) => {
-               set((state) => {
-                  if (!state.project) return state;
+               set(
+                  (state) => {
+                     if (!state.project) return state;
 
-                  return {
-                     project: { ...state.project, members: [...state.project.members, member] },
-                  };
-               });
+                     return {
+                        project: { ...state.project, members: [...state.project.members, member] },
+                     };
+                  },
+                  undefined,
+                  "add-member"
+               );
+            },
+            update: (member) => {
+               set(
+                  (state) => {
+                     if (!state.project) return state;
+
+                     return {
+                        project: {
+                           ...state.project,
+                           members: state.project.members.map((m) => {
+                              return m.id === member.id
+                                 ? {
+                                      ...m,
+                                      ...member,
+                                      ...(member.user && { user: { ...m.user, ...member.user } }),
+                                   }
+                                 : m;
+                           }),
+                        },
+                     };
+                  },
+                  undefined,
+                  "update-member"
+               );
             },
          },
       }),
