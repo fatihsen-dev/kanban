@@ -1,9 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useModalStore } from "@/store/modal-store";
-import AccessManage from "./access-manage";
 import Info from "./info";
 import Members from "./members";
+import Teams from "./teams";
 
 export default function SettingsModal() {
    const { isOpen, setIsOpen } = useModalStore();
@@ -20,9 +20,9 @@ export default function SettingsModal() {
          component: <Members />,
       },
       {
-         label: "Manage Access",
-         value: "manage-access",
-         component: <AccessManage />,
+         label: "Teams",
+         value: "teams",
+         component: <Teams />,
       },
    ];
 
@@ -34,11 +34,11 @@ export default function SettingsModal() {
                   <DialogTitle>Settings</DialogTitle>
                </DialogHeader>
                <Tabs defaultValue='project-info' className='w-full flex flex-row gap-5 p-0 flex-1'>
-                  <TabsList className='flex flex-col bg-gray-50 h-auto p-1 min-w-36 rounded-sm mb-auto'>
+                  <TabsList className='flex flex-col !bg-transparent h-auto gap-2 !p-0 min-w-36 rounded-sm mb-auto'>
                      {tabs.map((tab) => (
                         <TabsTrigger
                            key={tab.value}
-                           className='w-full rounded-sm justify-start cursor-pointer'
+                           className='w-full rounded-sm !shadow-none border !bg-gray-100 border-gray-200 justify-start cursor-pointer data-[state=active]:!bg-cyan-700 data-[state=active]:!text-white !transition-none'
                            value={tab.value}>
                            {tab.label}
                         </TabsTrigger>

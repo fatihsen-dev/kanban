@@ -1,5 +1,4 @@
-import { useProjectStore } from "@/store/project-store";
-import { useEffect, useState } from "react";
+import useRoleGuard from "@/hooks/use-role-guard";
 
 interface RoleGuardProps {
    roles: IProjectAccessRole[];
@@ -7,16 +6,9 @@ interface RoleGuardProps {
 }
 
 export default function RoleGuard({ roles, children }: RoleGuardProps) {
-   const [memberIsExist, setMemberIsExist] = useState(false);
-   const { authMember } = useProjectStore();
+   const { isAllowed } = useRoleGuard(roles);
 
-   useEffect(() => {
-      if (authMember) {
-         setMemberIsExist(true);
-      }
-   }, [authMember]);
-
-   if (!memberIsExist || !roles.includes(authMember!.role)) {
+   if (!isAllowed) {
       return null;
    }
 

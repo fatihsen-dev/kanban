@@ -5,7 +5,7 @@ export default function Info() {
    const { project } = useProjectStore();
 
    return (
-      <div>
+      <div className='bg-gray-50 border border-gray-200 rounded-sm p-2'>
          <table>
             <tbody>
                <tr>
