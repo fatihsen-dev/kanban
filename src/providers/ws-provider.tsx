@@ -58,6 +58,11 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.TeamCreated:
                team.add(lastJsonMessage.data as IProjectTeam);
                break;
+            case EventName.TeamUpdated:
+               team.update(
+                  lastJsonMessage.data as Partial<IProjectTeam> & Pick<IProjectTeam, "id">
+               );
+               break;
             case EventName.ProjectMemberCreated:
                member.add(lastJsonMessage.data as IProjectMember);
                break;

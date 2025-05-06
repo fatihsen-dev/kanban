@@ -56,12 +56,7 @@ function Member({ member, updateRole }: MemberProps) {
             <span>{member.user.name}</span>
             <span className='text-xs text-gray-500'>Joined on {formatDate(member.created_at)}</span>
          </div>
-         <RoleSelect
-            role={role}
-            setRole={setRole}
-            onChange={handleChange}
-            className='max-w-[100px] ml-auto'
-         />
+         <RoleSelect role={role} setRole={setRole} onChange={handleChange} className='ml-auto' />
       </div>
    );
 }

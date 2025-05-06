@@ -16,13 +16,23 @@ export default function RoleSelect({ role, setRole, onChange, className }: RoleS
 
    return (
       <Select value={role} onValueChange={handleChange}>
-         <SelectTrigger className={cn("w-[180px]", className)}>
+         <SelectTrigger
+            className={cn(
+               "w-[100px] bg-white hover:bg-gray-100 transition-colors cursor-pointer",
+               className
+            )}>
             <SelectValue placeholder='Theme' />
          </SelectTrigger>
          <SelectContent>
-            <SelectItem value='admin'>Admin</SelectItem>
-            <SelectItem value='read'>Read</SelectItem>
-            <SelectItem value='write'>Write</SelectItem>
+            <SelectItem className='hover:bg-gray-100 cursor-pointer' value='admin'>
+               Admin
+            </SelectItem>
+            <SelectItem className='hover:bg-gray-100 cursor-pointer' value='read'>
+               Read
+            </SelectItem>
+            <SelectItem className='hover:bg-gray-100 cursor-pointer' value='write'>
+               Write
+            </SelectItem>
          </SelectContent>
       </Select>
    );
