@@ -1,4 +1,4 @@
-import useAuth from "@/hooks/user-auth";
+import useAuth from "@/hooks/use-auth";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useEffect } from "react";
 import CreateColumnModal from "./column-modal/create-column-modal";

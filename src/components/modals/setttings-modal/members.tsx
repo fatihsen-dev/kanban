@@ -1,7 +1,7 @@
 import RoleSelect from "@/components/project/role-select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useAuth from "@/hooks/use-auth";
 import useMember from "@/hooks/use-member";
-import useAuth from "@/hooks/user-auth";
 import formatDate from "@/lib/format-date";
 import { useProjectStore } from "@/store/project-store";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import useAuth from "@/hooks/user-auth";
+import useAuth from "@/hooks/use-auth";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { Home, Settings, UserPlus } from "lucide-react";
@@ -16,8 +16,7 @@ export default function Navbar() {
    const users: User[] = useMemo(
       () =>
          project?.members.map((member) => {
-            const status =
-               member.user.id === authMember?.user.id ? "online" : member.user.status ?? "away";
+            const status = member.user.id === authMember?.user.id ? "online" : member.user.status ?? "away";
             return {
                id: member.user.id,
                name: member.user.name,
@@ -48,10 +47,7 @@ export default function Navbar() {
                <Button onClick={openInviteMemberModal} variant='outline' size='icon'>
                   <UserPlus />
                </Button>
-               <Button
-                  variant='outline'
-                  size='icon'
-                  onClick={() => setIsOpen(true, ModalType.PROJECT_SETTINGS)}>
+               <Button variant='outline' size='icon' onClick={() => setIsOpen(true, ModalType.PROJECT_SETTINGS)}>
                   <Settings />
                </Button>
             </RoleGuard>
