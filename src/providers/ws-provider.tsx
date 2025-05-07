@@ -13,12 +13,14 @@ interface WsProviderProps {
 
 export default function WsProvider({ children }: WsProviderProps) {
    const { setLastMessage } = useWsStore();
-   const { task, column, updateMemberByUserId, team } = useProjectStore();
+   const { task, column, updateMemberByUserId, team, member } = useProjectStore();
    const { project_id } = useParams();
    const { token, addInvitation } = useAuthStore();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
-      `${import.meta.env.VITE_WS_URL}/ws?token=${token}${project_id ? `&project_id=${project_id}` : ""}`,
+      `${import.meta.env.VITE_WS_URL}/ws?token=${token}${
+         project_id ? `&project_id=${project_id}` : ""
+      }`,
       {
          share: true,
          shouldReconnect: () => false,
@@ -56,6 +58,19 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.TeamCreated:
                team.add(lastJsonMessage.data as IProjectTeam);
                break;
+            case EventName.TeamUpdated:
+               team.update(
+                  lastJsonMessage.data as Partial<IProjectTeam> & Pick<IProjectTeam, "id">
+               );
+               break;
+            case EventName.ProjectMemberCreated:
+               member.add(lastJsonMessage.data as IProjectMember);
+               break;
+            case EventName.ProjectMemberUpdated:
+               member.update(
+                  lastJsonMessage.data as Partial<IProjectMember> & Pick<IProjectMember, "id">
+               );
+               break;
             case EventName.UserStatusUpdated:
                updateMemberByUserId((lastJsonMessage.data as IUserStatusResponse).id, {
                   user: {
@@ -65,7 +80,16 @@ export default function WsProvider({ children }: WsProviderProps) {
                break;
          }
       }
-   }, [lastJsonMessage, task, column, addInvitation, setLastMessage, updateMemberByUserId, team]);
+   }, [
+      lastJsonMessage,
+      task,
+      column,
+      addInvitation,
+      setLastMessage,
+      updateMemberByUserId,
+      team,
+      member,
+   ]);
 
    if (readyState === 1) {
       return <>{children}</>;

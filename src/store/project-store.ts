@@ -4,12 +4,10 @@ import { devtools } from "zustand/middleware";
 interface State {
    project: IProjectWithDetails | null;
    projects: IProject[];
-   authMember: IProjectMember | null;
    setProjects: (projects: IProject[]) => void;
    setProject: (project: IProjectWithDetails) => void;
    addProject: (project: IProject) => void;
    removeProject: (project_id: IProject["id"]) => void;
-   setMember: (member: IProjectMember) => void;
    updateMemberByUserId: (
       user_id: IUser["id"],
       member: Omit<Partial<IProjectMember>, "user"> & { user: Partial<IProjectMember["user"]> }
@@ -29,6 +27,11 @@ interface State {
    };
    team: {
       add: (team: IProjectTeam) => void;
+      update: (team: Partial<IProjectTeam> & Pick<IProjectTeam, "id">) => void;
+   };
+   member: {
+      add: (member: IProjectMember) => void;
+      update: (member: Partial<IProjectMember> & Pick<IProjectMember, "id">) => void;
    };
 }
 
@@ -37,10 +40,6 @@ export const useProjectStore = create<State>()(
       (set, get) => ({
          projects: [],
          project: null,
-         authMember: null,
-         setMember: (member: IProjectMember) => {
-            set({ authMember: member });
-         },
          updateMemberByUserId: (user_id, member) => {
             set((state) => {
                if (!state.project) return state;
@@ -71,7 +70,9 @@ export const useProjectStore = create<State>()(
             set((state) => ({ projects: [...state.projects, project] }));
          },
          removeProject: (project_id: IProject["id"]) => {
-            set((state) => ({ projects: state.projects.filter((project) => project.id !== project_id) }));
+            set((state) => ({
+               projects: state.projects.filter((project) => project.id !== project_id),
+            }));
          },
          column: {
             getById: (column_id) => {
@@ -122,7 +123,9 @@ export const useProjectStore = create<State>()(
                   return {
                      project: {
                         ...state.project,
-                        columns: state.project.columns.map((c) => (c.id === column.id ? { ...c, ...column } : c)),
+                        columns: state.project.columns.map((c) =>
+                           c.id === column.id ? { ...c, ...column } : c
+                        ),
                      },
                   };
                });
@@ -169,7 +172,10 @@ export const useProjectStore = create<State>()(
                         project: {
                            ...state.project,
                            columns: state.project.columns.map((column: IColumnWithTasks) => {
-                              return { ...column, tasks: column.tasks.filter((task: ITask) => task.id !== task_id) };
+                              return {
+                                 ...column,
+                                 tasks: column.tasks.filter((task: ITask) => task.id !== task_id),
+                              };
                            }),
                         },
                      };
@@ -183,7 +189,9 @@ export const useProjectStore = create<State>()(
                   (state) => {
                      if (!state.project) return state;
 
-                     const column = state.project.columns.find((column) => column.tasks.some((t) => t.id === task.id));
+                     const column = state.project.columns.find((column) =>
+                        column.tasks.some((t) => t.id === task.id)
+                     );
                      if (!column) return state;
                      const ts = column.tasks.find((t) => t.id === task.id);
                      if (!ts) return state;
@@ -223,7 +231,9 @@ export const useProjectStore = create<State>()(
                            ...state.project,
                            columns: state.project.columns.map((column) => ({
                               ...column,
-                              tasks: column.tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)),
+                              tasks: column.tasks.map((t) =>
+                                 t.id === task.id ? { ...t, ...task } : t
+                              ),
                            })),
                         },
                      };
@@ -235,13 +245,74 @@ export const useProjectStore = create<State>()(
          },
          team: {
             add: (team) => {
-               set((state) => {
-                  if (!state.project) return state;
+               set(
+                  (state) => {
+                     if (!state.project) return state;
 
-                  return {
-                     project: { ...state.project, teams: [...state.project.teams, team] },
-                  };
-               });
+                     return {
+                        project: { ...state.project, teams: [...state.project.teams, team] },
+                     };
+                  },
+                  undefined,
+                  "add-team"
+               );
+            },
+            update: (team) => {
+               set(
+                  (state) => {
+                     if (!state.project) return state;
+
+                     return {
+                        project: {
+                           ...state.project,
+                           teams: state.project.teams.map((t) =>
+                              t.id === team.id ? { ...t, ...team } : t
+                           ),
+                        },
+                     };
+                  },
+                  undefined,
+                  "update-team"
+               );
+            },
+         },
+         member: {
+            add: (member) => {
+               set(
+                  (state) => {
+                     if (!state.project) return state;
+
+                     return {
+                        project: { ...state.project, members: [...state.project.members, member] },
+                     };
+                  },
+                  undefined,
+                  "add-member"
+               );
+            },
+            update: (member) => {
+               set(
+                  (state) => {
+                     if (!state.project) return state;
+
+                     return {
+                        project: {
+                           ...state.project,
+                           members: state.project.members.map((m) => {
+                              return m.id === member.id
+                                 ? {
+                                      ...m,
+                                      ...member,
+                                      ...(member.user && { user: { ...m.user, ...member.user } }),
+                                   }
+                                 : m;
+                           }),
+                        },
+                     };
+                  },
+                  undefined,
+                  "update-member"
+               );
             },
          },
       }),

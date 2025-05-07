@@ -1,9 +1,9 @@
-import { useProjectStore } from "@/store/project-store";
 import { useEffect, useState } from "react";
+import useAuth from "./user-auth";
 
 export default function useRoleGuard(roles: IProjectAccessRole[]) {
    const [memberIsExist, setMemberIsExist] = useState(false);
-   const { authMember } = useProjectStore();
+   const { authMember } = useAuth();
    const [isAllowed, setIsAllowed] = useState(false);
 
    useEffect(() => {

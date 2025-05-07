@@ -19,15 +19,21 @@ export default function Project() {
    const { project_id } = useParams();
    const { user } = useAuthStore();
    const [taskId, setTaskId] = useQueryState("taskId");
-   const { project, setProject, setMember } = useProjectStore();
+   const { project, setProject } = useProjectStore();
    const { setIsOpen } = useModalStore();
 
-   const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithDetails>, AxiosError<IErrorResponse>>({
+   const { data, isLoading, error } = useQuery<
+      ISuccessResponse<IProjectWithDetails>,
+      AxiosError<IErrorResponse>
+   >({
       queryKey: [`projects/${project_id}`],
       retry: false,
    });
 
-   const { data: onlineUsersData } = useQuery<ISuccessResponse<IUserStatusResponse[]>, AxiosError<IErrorResponse>>({
+   const { data: onlineUsersData } = useQuery<
+      ISuccessResponse<IUserStatusResponse[]>,
+      AxiosError<IErrorResponse>
+   >({
       queryKey: [`projects/${data?.data?.id}/members/online`],
       retry: false,
       enabled: !!data?.success,
@@ -47,9 +53,8 @@ export default function Project() {
                },
             })),
          });
-         setMember(project.members.find((member) => member.user.id === user?.id)!);
       }
-   }, [data, setProject, setMember, user, onlineUsersData]);
+   }, [data, setProject, user, onlineUsersData]);
 
    if (error) {
       return <div>Error: {error.response?.data.message}</div>;
@@ -74,7 +79,12 @@ export default function Project() {
                      gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
                   }}>
                   {project?.columns.map((column) => (
-                     <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
+                     <Column
+                        key={column.id}
+                        column={column}
+                        taskId={taskId}
+                        setTaskId={setTaskId}
+                     />
                   ))}
                </div>
                <RoleGuard roles={["owner", "admin"]}>

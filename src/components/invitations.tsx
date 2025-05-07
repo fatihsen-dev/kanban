@@ -15,7 +15,10 @@ export default function Invitations() {
    const { invitations, setInvitations } = useAuthStore();
 
    const updateStatusMutation = useMutation<IInvitation, IInvitationUpdateStatusRequest>();
-   const { data, isLoading, error } = useQuery<ISuccessResponse<IInvitation[]>, AxiosError<IErrorResponse>>({
+   const { data, isLoading, error } = useQuery<
+      ISuccessResponse<IInvitation[]>,
+      AxiosError<IErrorResponse>
+   >({
       queryKey: ["invitations"],
       retry: false,
    });
@@ -24,7 +27,7 @@ export default function Invitations() {
       updateStatusMutation.mutate(
          {
             url: `/invitations/${invitation.id}`,
-            method: "POST",
+            method: "PUT",
             payload: { status },
          },
          {
