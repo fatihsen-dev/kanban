@@ -16,7 +16,7 @@ import useTeam from "@/hooks/use-team";
 import useToast from "@/hooks/use-toast";
 import formatDate from "@/lib/format-date";
 import { useProjectStore } from "@/store/project-store";
-import { List, Trash } from "lucide-react";
+import { List, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ITab } from ".";
 
@@ -127,28 +127,100 @@ export default function EditTeam({ editingTeam, setTab }: { editingTeam: IProjec
                      </div>
                   ))}
                </ul>
-               <Dialog open={addingMember} onOpenChange={setAddingMember}>
-                  <DialogTrigger asChild>
-                     <Button variant='outline'>Add Member</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                     <DialogHeader>
-                        <DialogTitle>Add Member</DialogTitle>
-                        <DialogDescription>
-                           Select a member from the project to add them to this team.
-                        </DialogDescription>
-                     </DialogHeader>
-                     <DialogFooter>
-                        <Button variant='outline' onClick={() => setAddingMember(false)}>
-                           Cancel
-                        </Button>
-                        <Button onClick={() => setAddingMember(false)}>Add</Button>
-                     </DialogFooter>
-                  </DialogContent>
-               </Dialog>
+               <AddMemberDialog addingMember={addingMember} setAddingMember={setAddingMember} />
             </div>
          </div>
          <Button onClick={updateTeam}>Update Team</Button>
       </div>
+   );
+}
+
+function AddMemberDialog({
+   addingMember,
+   setAddingMember,
+}: {
+   addingMember: boolean;
+   setAddingMember: (addingMember: boolean) => void;
+}) {
+   const { project } = useProjectStore();
+   const [selectedMembers, setSelectedMembers] = useState<IProjectMember[]>([]);
+   const [search, setSearch] = useState("");
+   const [members, setMembers] = useState<IProjectMember[]>([]);
+
+   useEffect(() => {
+      if (project) {
+         setMembers(
+            project.members
+               .filter((member) => member.user.name.toLowerCase().includes(search.toLowerCase()))
+               .filter((member) => !selectedMembers.some((m) => m.id === member.id))
+               .slice(0, 5)
+         );
+      }
+   }, [project, search, selectedMembers]);
+
+   const addMember = (member: IProjectMember) => {
+      if (selectedMembers.some((m) => m.id === member.id)) {
+         return;
+      }
+      setSelectedMembers([...selectedMembers, member]);
+   };
+
+   const removeMember = (member: IProjectMember) => {
+      setSelectedMembers(selectedMembers.filter((m) => m.id !== member.id));
+   };
+
+   const handleAddMember = () => {
+      setAddingMember(false);
+   };
+
+   return (
+      <Dialog open={addingMember} onOpenChange={setAddingMember}>
+         <DialogTrigger asChild>
+            <Button variant='outline'>Add Member</Button>
+         </DialogTrigger>
+         <DialogContent>
+            <DialogHeader>
+               <DialogTitle>Add Member</DialogTitle>
+               <DialogDescription>Select a member from the project to add them to this team.</DialogDescription>
+            </DialogHeader>
+            <Input placeholder='Search' value={search} onChange={(e) => setSearch(e.currentTarget.value)} />
+            {members.length > 0 && (
+               <div className='flex flex-col gap-2'>
+                  <span>Members</span>
+                  <ul className='flex flex-col gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+                     {members.map((member) => (
+                        <div key={member.id} className='flex items-center justify-between'>
+                           <span>{member.user.name}</span>
+                           <Button variant='outline' size='icon' onClick={() => addMember(member)}>
+                              <Plus />
+                           </Button>
+                        </div>
+                     ))}
+                  </ul>
+               </div>
+            )}
+            {selectedMembers.length > 0 && (
+               <div className='flex flex-col gap-2'>
+                  <span>Selected Members</span>
+                  <div className='flex flex-col gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+                     {selectedMembers.map((member) => (
+                        <div key={member.id} className='flex items-center justify-between gap-2'>
+                           <span>{member.user.name}</span>
+                           <Button variant='outline' size='icon' onClick={() => removeMember(member)}>
+                              <Trash />
+                           </Button>
+                        </div>
+                     ))}
+                  </div>
+               </div>
+            )}
+            <DialogFooter>
+               <Button variant='outline' onClick={() => setAddingMember(false)}>
+                  Cancel
+               </Button>
+               <Button onClick={handleAddMember}>Add</Button>
+            </DialogFooter>
+         </DialogContent>
+      </Dialog>
    );
 }
