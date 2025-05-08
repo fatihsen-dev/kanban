@@ -28,11 +28,11 @@ export default function Modals() {
          case ModalType.PROJECT_SETTINGS:
             return renderWithAccess(<SettingsModal />, ["owner", "admin"]);
          case ModalType.CREATE_COLUMN:
-            return renderWithAccess(<CreateColumnModal />, ["admin"]);
+            return renderWithAccess(<CreateColumnModal />, ["admin", "owner"]);
          case ModalType.EDIT_COLUMN:
-            return renderWithAccess(<EditColumnModal />, ["admin"]);
+            return renderWithAccess(<EditColumnModal />, ["admin", "owner"]);
          case ModalType.CREATE_TASK:
-            return renderWithAccess(<CreateTaskModal />, ["admin", "write"]);
+            return renderWithAccess(<CreateTaskModal />, ["admin", "write", "owner"]);
          case ModalType.INVITE_MEMBER:
             return renderWithAccess(<InviteMemberModal />, ["admin", "owner"]);
          case ModalType.CREATE_PROJECT:

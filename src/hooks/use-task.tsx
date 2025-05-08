@@ -26,9 +26,8 @@ export default function useTask() {
             payload: task,
          },
          {
-            onSuccess: (data) => {
+            onSuccess: () => {
                if (!project) return;
-               taskState.add(data);
                if (callback) callback();
             },
             onError: (error) => {
