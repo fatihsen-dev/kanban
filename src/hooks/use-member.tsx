@@ -4,10 +4,10 @@ import { useProjectStore } from "@/store/project-store";
 export default function useMember() {
    const { project } = useProjectStore();
 
-   const updateMutation = useMutation<ISuccessResponse<null>, Pick<IProjectMember, "role">>();
+   const updateMutation = useMutation<ISuccessResponse<null>, Partial<IProjectMember> & Pick<IProjectMember, "id">>();
 
    const update = (
-      member: Pick<IProjectMember, "id" | "role">,
+      member: Partial<IProjectMember> & Pick<IProjectMember, "id">,
       callback?: (error?: string) => void
    ) => {
       updateMutation.mutate(

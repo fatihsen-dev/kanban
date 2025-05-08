@@ -22,6 +22,7 @@ export default function InviteMemberModal() {
    const { user } = useAuthStore();
    const { project } = useProjectStore();
    const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
+
    const inviteMutation = useMutation<ISuccessResponse<IUser>, IInvitationCreateRequest>();
 
    const addSelectedUser = (user: IUser) => {
@@ -44,11 +45,10 @@ export default function InviteMemberModal() {
 
       inviteMutation.mutate(
          {
-            url: `/invitations`,
+            url: `/invitations/${project!.id}`,
             method: "POST",
             payload: {
                invitee_ids: selectedUsers.map((u) => u.id),
-               project_id: project!.id,
                message: "You are invited to join the project",
             },
          },
@@ -130,7 +130,11 @@ export default function InviteMemberModal() {
                   <div>
                      <ul className='flex flex-col gap-2'>
                         {users
-                           .filter((u) => !selectedUsers.some((su) => su.id === u.id))
+                           .filter(
+                              (u) =>
+                                 !selectedUsers.some((su) => su.id === u.id) &&
+                                 !project?.members.some((m) => m.user_id === u.id)
+                           )
                            .map((user) => (
                               <li key={user.id} className='flex items-center gap-2'>
                                  <div className='flex items-center gap-2'>

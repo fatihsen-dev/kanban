@@ -28,6 +28,8 @@ interface State {
    team: {
       add: (team: IProjectTeam) => void;
       update: (team: Partial<IProjectTeam> & Pick<IProjectTeam, "id">) => void;
+      remove: (team_id: IProjectTeam["id"]) => void;
+      addMembers: (team_id: IProjectTeam["id"], member_ids: IProjectMember["id"][]) => void;
    };
    member: {
       add: (member: IProjectMember) => void;
@@ -123,9 +125,7 @@ export const useProjectStore = create<State>()(
                   return {
                      project: {
                         ...state.project,
-                        columns: state.project.columns.map((c) =>
-                           c.id === column.id ? { ...c, ...column } : c
-                        ),
+                        columns: state.project.columns.map((c) => (c.id === column.id ? { ...c, ...column } : c)),
                      },
                   };
                });
@@ -189,9 +189,7 @@ export const useProjectStore = create<State>()(
                   (state) => {
                      if (!state.project) return state;
 
-                     const column = state.project.columns.find((column) =>
-                        column.tasks.some((t) => t.id === task.id)
-                     );
+                     const column = state.project.columns.find((column) => column.tasks.some((t) => t.id === task.id));
                      if (!column) return state;
                      const ts = column.tasks.find((t) => t.id === task.id);
                      if (!ts) return state;
@@ -231,9 +229,7 @@ export const useProjectStore = create<State>()(
                            ...state.project,
                            columns: state.project.columns.map((column) => ({
                               ...column,
-                              tasks: column.tasks.map((t) =>
-                                 t.id === task.id ? { ...t, ...task } : t
-                              ),
+                              tasks: column.tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)),
                            })),
                         },
                      };
@@ -265,14 +261,37 @@ export const useProjectStore = create<State>()(
                      return {
                         project: {
                            ...state.project,
-                           teams: state.project.teams.map((t) =>
-                              t.id === team.id ? { ...t, ...team } : t
-                           ),
+                           teams: state.project.teams.map((t) => (t.id === team.id ? { ...t, ...team } : t)),
                         },
                      };
                   },
                   undefined,
                   "update-team"
+               );
+            },
+            remove: (team_id) => {
+               set((state) => {
+                  if (!state.project) return state;
+
+                  return { project: { ...state.project, teams: state.project.teams.filter((t) => t.id !== team_id) } };
+               });
+            },
+            addMembers: (team_id: string, member_ids: string[]) => {
+               set(
+                  (state) => {
+                     if (!state.project) return state;
+
+                     return {
+                        project: {
+                           ...state.project,
+                           members: state.project.members.map((m) =>
+                              member_ids.includes(m.id) ? { ...m, team_id } : m
+                           ),
+                        },
+                     };
+                  },
+                  undefined,
+                  "add-members"
                );
             },
          },

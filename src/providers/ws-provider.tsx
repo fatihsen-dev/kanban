@@ -18,9 +18,7 @@ export default function WsProvider({ children }: WsProviderProps) {
    const { token, addInvitation } = useAuthStore();
 
    const { readyState, lastJsonMessage } = useWebSocket<IWsResponse>(
-      `${import.meta.env.VITE_WS_URL}/ws?token=${token}${
-         project_id ? `&project_id=${project_id}` : ""
-      }`,
+      `${import.meta.env.VITE_WS_URL}/ws?token=${token}${project_id ? `&project_id=${project_id}` : ""}`,
       {
          share: true,
          shouldReconnect: () => false,
@@ -59,17 +57,22 @@ export default function WsProvider({ children }: WsProviderProps) {
                team.add(lastJsonMessage.data as IProjectTeam);
                break;
             case EventName.TeamUpdated:
-               team.update(
-                  lastJsonMessage.data as Partial<IProjectTeam> & Pick<IProjectTeam, "id">
+               team.update(lastJsonMessage.data as Partial<IProjectTeam> & Pick<IProjectTeam, "id">);
+               break;
+            case EventName.TeamDeleted:
+               team.remove((lastJsonMessage.data as Pick<IProjectTeam, "id">).id);
+               break;
+            case EventName.TeamMembersAdded:
+               team.addMembers(
+                  (lastJsonMessage.data as { team_id: IProjectTeam["id"] }).team_id,
+                  (lastJsonMessage.data as { member_ids: IProjectMember["id"][] }).member_ids
                );
                break;
             case EventName.ProjectMemberCreated:
                member.add(lastJsonMessage.data as IProjectMember);
                break;
             case EventName.ProjectMemberUpdated:
-               member.update(
-                  lastJsonMessage.data as Partial<IProjectMember> & Pick<IProjectMember, "id">
-               );
+               member.update(lastJsonMessage.data as Partial<IProjectMember> & Pick<IProjectMember, "id">);
                break;
             case EventName.UserStatusUpdated:
                updateMemberByUserId((lastJsonMessage.data as IUserStatusResponse).id, {
@@ -80,16 +83,7 @@ export default function WsProvider({ children }: WsProviderProps) {
                break;
          }
       }
-   }, [
-      lastJsonMessage,
-      task,
-      column,
-      addInvitation,
-      setLastMessage,
-      updateMemberByUserId,
-      team,
-      member,
-   ]);
+   }, [lastJsonMessage, task, column, addInvitation, setLastMessage, updateMemberByUserId, team, member]);
 
    if (readyState === 1) {
       return <>{children}</>;
