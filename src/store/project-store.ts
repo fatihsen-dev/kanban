@@ -29,6 +29,7 @@ interface State {
       add: (team: IProjectTeam) => void;
       update: (team: Partial<IProjectTeam> & Pick<IProjectTeam, "id">) => void;
       remove: (team_id: IProjectTeam["id"]) => void;
+      addMembers: (team_id: IProjectTeam["id"], member_ids: IProjectMember["id"][]) => void;
    };
    member: {
       add: (member: IProjectMember) => void;
@@ -274,6 +275,24 @@ export const useProjectStore = create<State>()(
 
                   return { project: { ...state.project, teams: state.project.teams.filter((t) => t.id !== team_id) } };
                });
+            },
+            addMembers: (team_id: string, member_ids: string[]) => {
+               set(
+                  (state) => {
+                     if (!state.project) return state;
+
+                     return {
+                        project: {
+                           ...state.project,
+                           members: state.project.members.map((m) =>
+                              member_ids.includes(m.id) ? { ...m, team_id } : m
+                           ),
+                        },
+                     };
+                  },
+                  undefined,
+                  "add-members"
+               );
             },
          },
          member: {

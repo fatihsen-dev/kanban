@@ -1,13 +1,13 @@
 import RoleSelect from "@/components/project/role-select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import useAuth from "@/hooks/use-auth";
 import useMember from "@/hooks/use-member";
 import formatDate from "@/lib/format-date";
+import { useAuthStore } from "@/store/auth-store";
 import { useProjectStore } from "@/store/project-store";
 import { useState } from "react";
 
 export default function Members() {
-   const { authMember } = useAuth();
+   const { authMember } = useAuthStore();
    const { update } = useMember();
    const { project } = useProjectStore();
 

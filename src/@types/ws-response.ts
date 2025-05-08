@@ -11,8 +11,9 @@ export enum EventName {
    TeamDeleted = "team.deleted",
    InvitationCreated = "invitation.created",
    UserStatusUpdated = "user.status.updated",
-   ProjectMemberCreated = "project_member.created",
-   ProjectMemberUpdated = "project_member_updated",
+   ProjectMemberCreated = "project.member.created",
+   ProjectMemberUpdated = "project.member.updated",
+   TeamMembersAdded = "team.members.added",
 }
 
 export interface IWsResponse {

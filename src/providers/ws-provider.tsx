@@ -62,6 +62,12 @@ export default function WsProvider({ children }: WsProviderProps) {
             case EventName.TeamDeleted:
                team.remove((lastJsonMessage.data as Pick<IProjectTeam, "id">).id);
                break;
+            case EventName.TeamMembersAdded:
+               team.addMembers(
+                  (lastJsonMessage.data as { team_id: IProjectTeam["id"] }).team_id,
+                  (lastJsonMessage.data as { member_ids: IProjectMember["id"][] }).member_ids
+               );
+               break;
             case EventName.ProjectMemberCreated:
                member.add(lastJsonMessage.data as IProjectMember);
                break;

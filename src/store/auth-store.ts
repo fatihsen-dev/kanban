@@ -7,6 +7,8 @@ interface State {
    setToken: (token: string | null) => void;
    user: IUser | null;
    setUser: (user: IUser | null) => void;
+   authMember: IProjectMember | null;
+   setAuthMember: (authMember: IProjectMember | null) => void;
    invitations: IInvitation[];
    setInvitations: (invitations: IInvitation[]) => void;
    addInvitation: (invitation: IInvitation) => void;
@@ -20,9 +22,11 @@ export const useAuthStore = create<State>()(
          status: "loading",
          token: null,
          user: null,
+         authMember: null,
          invitations: [],
          setToken: (token) => set({ token, status: token ? "authenticated" : "unauthenticated" }),
          setUser: (user) => set({ user, status: user ? "authenticated" : "unauthenticated" }),
+         setAuthMember: (authMember) => set({ authMember }),
          setInvitations: (invitations) => set({ invitations }),
          addInvitation: (invitation) => set({ invitations: [...get().invitations, invitation] }),
          removeInvitation: (invitation) =>

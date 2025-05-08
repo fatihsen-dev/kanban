@@ -1,4 +1,4 @@
-import useAuth from "@/hooks/use-auth";
+import { useAuthStore } from "@/store/auth-store";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { Home, Settings, UserPlus } from "lucide-react";
@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 
 export default function Navbar() {
    const { project } = useProjectStore();
-   const { authMember } = useAuth();
+   const { authMember } = useAuthStore();
    const { setIsOpen } = useModalStore();
 
    const users: User[] = useMemo(

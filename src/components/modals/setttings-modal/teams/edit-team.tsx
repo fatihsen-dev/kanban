@@ -26,13 +26,13 @@ export default function EditTeam({ editingTeam, setTab }: { editingTeam: IProjec
    const [role, setRole] = useState<IProjectAccessRole>(editingTeam.role);
    const [members, setMembers] = useState<IProjectMember[]>([]);
    const { update } = useTeam();
-   const { update: updateMember } = useMember();
    const { project } = useProjectStore();
-   const [open, setOpen] = useState(false);
    const [addingMember, setAddingMember] = useState(false);
+
    useEffect(() => {
       if (project) {
-         setMembers(project.members.filter((member) => member.team_id === editingTeam.id));
+         const members = project.members.filter((m) => m.team_id === editingTeam.id);
+         setMembers(members);
       }
    }, [editingTeam, project]);
 
@@ -60,18 +60,6 @@ export default function EditTeam({ editingTeam, setTab }: { editingTeam: IProjec
       );
    };
 
-   const handleDelete = (member: IProjectMember) => {
-      updateMember(
-         {
-            id: member.id,
-            team_id: "",
-         },
-         (error) => {
-            if (error) toast(error, "error");
-         }
-      );
-   };
-
    return (
       <div className='flex flex-col gap-2 h-full'>
          <div className='flex flex-col gap-2 flex-1'>
@@ -88,46 +76,14 @@ export default function EditTeam({ editingTeam, setTab }: { editingTeam: IProjec
                </div>
                <ul className='flex flex-col gap-2'>
                   {members.map((member) => (
-                     <div
-                        key={member.id}
-                        className='flex items-center justify-start gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
-                        <Avatar>
-                           <AvatarImage src={""} />
-                           <AvatarFallback className='bg-gray-200 text-gray-500'>
-                              {member.user.name.charAt(0)}
-                           </AvatarFallback>
-                        </Avatar>
-                        <div className='flex flex-col leading-[1.2rem]'>
-                           <span>{member.user.name}</span>
-                           <span className='text-xs text-gray-500'>Joined on {formatDate(member.created_at)}</span>
-                        </div>
-                        <Dialog open={open} onOpenChange={setOpen}>
-                           <DialogTrigger asChild>
-                              <Button className='ml-auto' variant='destructive' size='icon'>
-                                 <Trash />
-                              </Button>
-                           </DialogTrigger>
-                           <DialogContent>
-                              <DialogHeader>
-                                 <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                 <DialogDescription>
-                                    This action cannot be undone. This will permanently delete the member from the team.
-                                 </DialogDescription>
-                              </DialogHeader>
-                              <DialogFooter>
-                                 <Button variant='outline' onClick={() => setOpen(false)}>
-                                    Cancel
-                                 </Button>
-                                 <Button variant='destructive' onClick={() => handleDelete(member)}>
-                                    Delete
-                                 </Button>
-                              </DialogFooter>
-                           </DialogContent>
-                        </Dialog>
-                     </div>
+                     <Member key={member.id} member={member} />
                   ))}
                </ul>
-               <AddMemberDialog addingMember={addingMember} setAddingMember={setAddingMember} />
+               <AddMemberDialog
+                  addingMember={addingMember}
+                  setAddingMember={setAddingMember}
+                  editingTeam={editingTeam}
+               />
             </div>
          </div>
          <Button onClick={updateTeam}>Update Team</Button>
@@ -138,25 +94,31 @@ export default function EditTeam({ editingTeam, setTab }: { editingTeam: IProjec
 function AddMemberDialog({
    addingMember,
    setAddingMember,
+   editingTeam,
 }: {
    addingMember: boolean;
    setAddingMember: (addingMember: boolean) => void;
+   editingTeam: IProjectTeam;
 }) {
    const { project } = useProjectStore();
    const [selectedMembers, setSelectedMembers] = useState<IProjectMember[]>([]);
    const [search, setSearch] = useState("");
    const [members, setMembers] = useState<IProjectMember[]>([]);
+   const { addMembers } = useTeam();
+   const { toast } = useToast();
 
    useEffect(() => {
       if (project) {
          setMembers(
             project.members
                .filter((member) => member.user.name.toLowerCase().includes(search.toLowerCase()))
-               .filter((member) => !selectedMembers.some((m) => m.id === member.id))
+               .filter(
+                  (member) => !selectedMembers.some((m) => m.id === member.id) && member.team_id !== editingTeam.id
+               )
                .slice(0, 5)
          );
       }
-   }, [project, search, selectedMembers]);
+   }, [project, search, selectedMembers, editingTeam]);
 
    const addMember = (member: IProjectMember) => {
       if (selectedMembers.some((m) => m.id === member.id)) {
@@ -170,7 +132,17 @@ function AddMemberDialog({
    };
 
    const handleAddMember = () => {
-      setAddingMember(false);
+      addMembers(
+         editingTeam.id,
+         selectedMembers.map((m) => m.id),
+         (error) => {
+            if (error) toast(error, "error");
+            else {
+               setSelectedMembers([]);
+               setAddingMember(false);
+            }
+         }
+      );
    };
 
    return (
@@ -222,5 +194,61 @@ function AddMemberDialog({
             </DialogFooter>
          </DialogContent>
       </Dialog>
+   );
+}
+
+function Member({ member }: { member: IProjectMember }) {
+   const [open, setOpen] = useState(false);
+   const { update: updateMember } = useMember();
+   const { toast } = useToast();
+
+   const deleteMember = (member: IProjectMember) => {
+      updateMember(
+         {
+            id: member.id,
+            team_id: "",
+         },
+         (error) => {
+            if (error) toast(error, "error");
+         }
+      );
+   };
+
+   return (
+      <div
+         key={member.id}
+         className='flex items-center justify-start gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+         <Avatar>
+            <AvatarImage src={""} />
+            <AvatarFallback className='bg-gray-200 text-gray-500'>{member.user.name.charAt(0)}</AvatarFallback>
+         </Avatar>
+         <div className='flex flex-col leading-[1.2rem]'>
+            <span>{member.user.name}</span>
+            <span className='text-xs text-gray-500'>Joined on {formatDate(member.created_at)}</span>
+         </div>
+         <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+               <Button className='ml-auto' variant='destructive' size='icon'>
+                  <Trash />
+               </Button>
+            </DialogTrigger>
+            <DialogContent>
+               <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                     This action cannot be undone. This will permanently delete the member from the team.
+                  </DialogDescription>
+               </DialogHeader>
+               <DialogFooter>
+                  <Button variant='outline' onClick={() => setOpen(false)}>
+                     Cancel
+                  </Button>
+                  <Button variant='destructive' onClick={() => deleteMember(member)}>
+                     Delete
+                  </Button>
+               </DialogFooter>
+            </DialogContent>
+         </Dialog>
+      </div>
    );
 }
