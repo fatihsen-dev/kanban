@@ -50,7 +50,6 @@ export default function useTask() {
          {
             onSuccess: () => {
                if (!project) return;
-               taskState.update(task);
                if (callback) callback();
             },
             onError: (error) => {
@@ -89,7 +88,6 @@ export default function useTask() {
          },
          {
             onSuccess: () => {
-               taskState.remove(taskId);
                if (callback) callback();
             },
             onError: (error) => {
