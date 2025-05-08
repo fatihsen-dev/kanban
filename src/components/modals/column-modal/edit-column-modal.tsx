@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import useColumn from "@/hooks/use-column";
 import useToast from "@/hooks/use-toast";
-import { createColumnSchema } from "@/schemas/column/create-column-schema";
+import { editColumnSchema } from "@/schemas/column/edit-column-schema";
 import { useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,14 +38,14 @@ export default function EditColumnModal() {
    }, [isOpen, data, getById]);
 
    const form = useForm({
-      resolver: zodResolver(createColumnSchema),
+      resolver: zodResolver(editColumnSchema),
       values: {
          name: column?.name ?? "",
          color: column?.color ?? "",
       },
    });
 
-   const onSubmit = async (values: z.infer<typeof createColumnSchema>) => {
+   const onSubmit = async (values: z.infer<typeof editColumnSchema>) => {
       if (!store.project) return;
       const { column_id } = data as { column_id: string };
       if (!column_id) return;
@@ -98,6 +98,13 @@ export default function EditColumnModal() {
                            <FormLabel>Color</FormLabel>
                            <FormControl>
                               <div className='grid grid-cols-7 justify-items-center gap-2 mr-auto'>
+                                 <div
+                                    onClick={() => field.onChange("")}
+                                    className='w-8 aspect-square rounded-md border-2 flex items-center justify-center border-dashed cursor-pointer text-muted-foreground border-muted-foreground'>
+                                    {field.value === "" && (
+                                       <div className='w-3 aspect-square rounded bg-muted-foreground'></div>
+                                    )}
+                                 </div>
                                  {columnColors.map((color) => (
                                     <div
                                        key={color.color}
