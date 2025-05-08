@@ -45,7 +45,7 @@ export default function CreateColumnModal() {
       resolver: zodResolver(createColumnSchema),
       defaultValues: {
          name: "",
-         color: columnColors[0].color,
+         color: undefined,
       },
    });
 
@@ -99,6 +99,13 @@ export default function CreateColumnModal() {
                            <FormLabel>Color</FormLabel>
                            <FormControl>
                               <div className='grid grid-cols-7 justify-items-center gap-2 mr-auto'>
+                                 <div
+                                    onClick={() => field.onChange(undefined)}
+                                    className='w-8 aspect-square rounded-md border-2 flex items-center justify-center border-dashed cursor-pointer text-muted-foreground border-muted-foreground'>
+                                    {field.value === undefined && (
+                                       <div className='w-3 aspect-square rounded bg-muted-foreground'></div>
+                                    )}
+                                 </div>
                                  {columnColors.map((color) => (
                                     <div
                                        key={color.color}
