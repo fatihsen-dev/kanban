@@ -24,13 +24,8 @@ export function AvatarGroup({ users, max = 3, size = "md", className }: AvatarGr
    const [remaining, setRemaining] = useState<number>(0);
 
    useEffect(() => {
-      const sortedUsers = users.sort((a, b) => {
-         if (a.status === "online" && b.status !== "online") return -1;
-         if (a.status !== "online" && b.status === "online") return 1;
-         return 0;
-      });
-      setDisplayUsers(sortedUsers.slice(0, max));
-      setRemaining(sortedUsers.length - max);
+      setDisplayUsers(users.slice(0, max));
+      setRemaining(users.length - max);
    }, [users, max]);
 
    const sizeClasses = {

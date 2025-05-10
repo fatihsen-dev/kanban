@@ -15,15 +15,21 @@ export default function Navbar() {
 
    const users: User[] = useMemo(
       () =>
-         project?.members.map((member) => {
-            const status = member.user.id === authMember?.user.id ? "online" : "offline";
-            return {
-               id: member.user.id,
-               name: member.user.name,
-               image: "",
-               status,
-            };
-         }) ?? [],
+         project?.members
+            .map((member) => {
+               const status = member.user.id === authMember?.user.id ? "online" : member.user.status ?? "offline";
+               return {
+                  id: member.user.id,
+                  name: member.user.name,
+                  image: "",
+                  status,
+               };
+            })
+            ?.sort((a, b) => {
+               if (a.status === "online" && b.status !== "online") return -1;
+               if (a.status !== "online" && b.status === "online") return 1;
+               return 0;
+            }) ?? [],
       [project, authMember]
    );
 
