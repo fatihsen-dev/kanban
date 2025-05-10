@@ -23,7 +23,7 @@ export default function Modals() {
       }
    };
 
-   const renderModal = () => {
+   return (() => {
       switch (type) {
          case ModalType.PROJECT_SETTINGS:
             return renderWithAccess(<SettingsModal />, ["owner", "admin"]);
@@ -38,7 +38,5 @@ export default function Modals() {
          case ModalType.CREATE_PROJECT:
             return <CreateProjectModal />;
       }
-   };
-
-   return <div>{renderModal()}</div>;
+   })();
 }
