@@ -1,4 +1,4 @@
-type UserStatus = "online" | "offline" | "away";
+type UserStatus = "online" | "offline";
 
 interface IUser extends IBase {
    name: string;

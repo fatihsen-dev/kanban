@@ -22,18 +22,12 @@ export default function Project() {
    const { project, setProject } = useProjectStore();
    const { setIsOpen } = useModalStore();
 
-   const { data, isLoading, error } = useQuery<
-      ISuccessResponse<IProjectWithDetails>,
-      AxiosError<IErrorResponse>
-   >({
+   const { data, isLoading, error } = useQuery<ISuccessResponse<IProjectWithDetails>, AxiosError<IErrorResponse>>({
       queryKey: [`projects/${project_id}`],
       retry: false,
    });
 
-   const { data: onlineUsersData } = useQuery<
-      ISuccessResponse<IUserStatusResponse[]>,
-      AxiosError<IErrorResponse>
-   >({
+   const { data: onlineUsersData } = useQuery<ISuccessResponse<IUserStatusResponse[]>, AxiosError<IErrorResponse>>({
       queryKey: [`projects/${data?.data?.id}/members/online`],
       retry: false,
       enabled: !!data?.success,
@@ -49,7 +43,7 @@ export default function Project() {
                ...member,
                user: {
                   ...member.user,
-                  status: onlineUsers.find((m) => m.id === member.user.id)?.status ?? "away",
+                  status: onlineUsers.find((m) => m.id === member.user.id)?.status ?? "offline",
                },
             })),
          });
@@ -79,12 +73,7 @@ export default function Project() {
                      gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
                   }}>
                   {project?.columns.map((column) => (
-                     <Column
-                        key={column.id}
-                        column={column}
-                        taskId={taskId}
-                        setTaskId={setTaskId}
-                     />
+                     <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
                   ))}
                </div>
                <RoleGuard roles={["owner", "admin"]}>

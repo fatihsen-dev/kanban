@@ -16,7 +16,7 @@ export default function Navbar() {
    const users: User[] = useMemo(
       () =>
          project?.members.map((member) => {
-            const status = member.user.id === authMember?.user.id ? "online" : member.user.status ?? "away";
+            const status = member.user.id === authMember?.user.id ? "online" : "offline";
             return {
                id: member.user.id,
                name: member.user.name,
