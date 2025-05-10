@@ -59,7 +59,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
       <div
          ref={drop as unknown as React.RefObject<HTMLDivElement>}
          style={column.color ? { borderColor: `${column.color}` } : {}}
-         className={`bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 min-w-96 h-full flex flex-col gap-4 transition-colors ${
+         className={`bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 min-w-96 h-full overflow-auto flex flex-col gap-4 transition-colors ${
             isOver ? "bg-gray-200" : ""
          }`}>
          <div className='flex flex-col w-full'>
@@ -68,7 +68,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                   {column.name}
                </h2>
                <RoleGuard roles={["owner", "admin"]}>
-                  <DropdownMenu>
+                  <DropdownMenu modal={false}>
                      <DropdownMenuTrigger className='cursor-pointer'>
                         <Ellipsis className='w-full! h-full!' />
                      </DropdownMenuTrigger>
@@ -87,7 +87,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
             </div>
             <span className='text-sm text-gray-500'>{column.tasks.length} tasks</span>
          </div>
-         <div className='flex flex-col gap-2 flex-1'>
+         <div className='flex flex-col gap-2 flex-1 overflow-y-auto'>
             {column.tasks.map((task) => (
                <Task key={task.id} column_id={column.id} task={task} taskId={taskId} setTaskId={setTaskId} />
             ))}
