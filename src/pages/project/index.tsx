@@ -48,6 +48,10 @@ export default function Project() {
             })),
          });
       }
+
+      return () => {
+         setProject(null);
+      };
    }, [data, setProject, user, onlineUsersData]);
 
    if (error) {

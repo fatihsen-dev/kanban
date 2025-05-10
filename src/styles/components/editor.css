@@ -1,0 +1,83 @@
+:root {
+   --icon-size: 16px;
+   --editor-font-size: 16px;
+}
+
+.w-md-editor .copied {
+   background-color: var(--foreground) !important;
+   color: var(--background) !important;
+}
+
+.w-md-editor ol li {
+   list-style-type: decimal !important;
+}
+
+.w-md-editor ul li:not(> input) {
+   list-style-type: disc !important;
+}
+
+.large-icon-editor .w-md-editor-toolbar svg {
+   width: var(--icon-size) !important;
+   height: var(--icon-size) !important;
+}
+
+.large-icon-editor .w-md-editor-toolbar {
+   user-select: none !important;
+   -webkit-user-select: none !important;
+}
+
+.large-icon-editor .w-md-editor-toolbar svg.custom-icon {
+   width: calc(var(--icon-size) + 3px) !important;
+   height: calc(var(--icon-size) + 3px) !important;
+}
+
+.large-icon-editor .w-md-editor-toolbar button {
+   height: calc(var(--icon-size) + 10px) !important;
+   width: calc(var(--icon-size) + 10px) !important;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 5px;
+}
+
+.large-icon-editor .w-md-editor-toolbar button:disabled {
+   opacity: 0 !important;
+   pointer-events: none !important;
+}
+
+.large-icon-editor .w-md-editor-toolbar {
+   height: auto !important;
+   padding: 5px !important;
+}
+.w-md-editor-preview {
+   padding: 10px !important;
+}
+.w-md-editor-preview,
+.w-md-editor-preview *,
+.wmde-markdown,
+.wmde-markdown * {
+   user-select: text !important;
+   -webkit-user-select: text !important;
+}
+
+.w-md-editor-text-input,
+.w-md-editor-text-pre > code {
+   font-size: var(--editor-font-size) !important;
+   line-height: 1.5 !important;
+}
+
+.w-md-editor-preview,
+.wmde-markdown {
+   font-size: var(--editor-font-size) !important;
+}
+
+.w-md-editor-bar {
+   width: 20px !important;
+   height: 20px !important;
+   margin-right: 5px !important;
+}
+
+.w-md-editor-bar svg {
+   width: 100% !important;
+   height: 100% !important;
+}

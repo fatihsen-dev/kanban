@@ -5,7 +5,7 @@ interface State {
    project: IProjectWithDetails | null;
    projects: IProject[];
    setProjects: (projects: IProject[]) => void;
-   setProject: (project: IProjectWithDetails) => void;
+   setProject: (project: IProjectWithDetails | null) => void;
    addProject: (project: IProject) => void;
    removeProject: (project_id: IProject["id"]) => void;
    updateMemberByUserId: (
@@ -62,7 +62,7 @@ export const useProjectStore = create<State>()(
                };
             });
          },
-         setProject: (project: IProjectWithDetails) => {
+         setProject: (project) => {
             set({ project });
          },
          setProjects: (projects: IProject[]) => {
