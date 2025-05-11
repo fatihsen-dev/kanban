@@ -6,7 +6,6 @@ import { AxiosError } from "axios";
 import { Check, X } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import Loading from "./loading";
 import { Button } from "./ui/button";
 
 export default function Invitations() {
@@ -15,10 +14,7 @@ export default function Invitations() {
    const { invitations, setInvitations } = useAuthStore();
 
    const updateStatusMutation = useMutation<IInvitation, IInvitationUpdateStatusRequest>();
-   const { data, isLoading, error } = useQuery<
-      ISuccessResponse<IInvitation[]>,
-      AxiosError<IErrorResponse>
-   >({
+   const { data, isLoading, error } = useQuery<ISuccessResponse<IInvitation[]>, AxiosError<IErrorResponse>>({
       queryKey: ["invitations"],
       retry: false,
    });
@@ -48,47 +44,50 @@ export default function Invitations() {
    }, [data, setInvitations]);
 
    if (isLoading) {
-      return <Loading />;
+      return <div className='py-2 px-4 text-sm text-muted-foreground'>Loading invitations...</div>;
    }
 
    if (error) {
-      return <div>Error: {error.message}</div>;
+      return <div className='py-2 px-4 text-sm text-red-500'>Error: {error.message}</div>;
    }
 
    return (
-      <div className='flex flex-col gap-4 fixed top-2 right-2 p-2 bg-gray-100 border border-gray-200 rounded-sm max-w-md w-full'>
-         <h3 className='text-xl font-bold mx-auto'>Notifications</h3>
-         <ul className='w-full flex flex-col gap-2'>
-            {invitations.map((invitation) => {
-               return (
-                  <li
-                     key={invitation.id}
-                     className='py-2 w-full px-4 rounded-md flex justify-between items-start bg-white'>
-                     <div>
-                        <span className='text-blue-500'>{invitation.inviter.name}</span>
-                        {" invited you to join "}
-                        <span className='text-blue-500'>{invitation.project.name}</span>
-                     </div>
-                     <div className='flex justify-end items-center gap-2'>
-                        <Button
-                           className='p-0 h-7 w-7 text-green-500'
-                           variant='outline'
-                           size='icon'
-                           onClick={() => handleUpdateStatus(invitation, "accepted")}>
-                           <Check />
-                        </Button>
-                        <Button
-                           className='p-0 h-7 w-7 text-red-500'
-                           variant='outline'
-                           size='icon'
-                           onClick={() => handleUpdateStatus(invitation, "rejected")}>
-                           <X />
-                        </Button>
-                     </div>
-                  </li>
-               );
-            })}
-         </ul>
+      <div className='flex flex-col gap-2'>
+         {invitations.length === 0 ? (
+            <p className='text-sm text-muted-foreground py-1 px-2'>No pending invitations</p>
+         ) : (
+            <ul className='w-full flex flex-col gap-2 max-h-[300px] overflow-y-auto'>
+               {invitations.map((invitation) => {
+                  return (
+                     <li
+                        key={invitation.id}
+                        className='py-2 w-full px-3 rounded-md flex justify-between items-start bg-muted/50 hover:bg-accent/50 transition-colors border border-border/40'>
+                        <div className='text-sm'>
+                           <span className='font-medium text-primary'>{invitation.inviter.name}</span>
+                           <span className='text-foreground'> invited you to join </span>
+                           <span className='font-medium text-primary'>{invitation.project.name}</span>
+                        </div>
+                        <div className='flex justify-end items-center gap-1 ml-2'>
+                           <Button
+                              className='p-0 h-6 w-6'
+                              variant='outline'
+                              size='icon'
+                              onClick={() => handleUpdateStatus(invitation, "accepted")}>
+                              <Check className='h-3 w-3 text-green-500' />
+                           </Button>
+                           <Button
+                              className='p-0 h-6 w-6'
+                              variant='outline'
+                              size='icon'
+                              onClick={() => handleUpdateStatus(invitation, "rejected")}>
+                              <X className='h-3 w-3 text-red-500' />
+                           </Button>
+                        </div>
+                     </li>
+                  );
+               })}
+            </ul>
+         )}
       </div>
    );
 }
