@@ -4,11 +4,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/store/auth-store";
-import { Bell } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import { Helmet } from "react-helmet";
 
 export default function Home() {
-   const { invitations } = useAuthStore();
+   const { invitations, signOut } = useAuthStore();
 
    return (
       <>
@@ -38,6 +38,9 @@ export default function Home() {
                      </DropdownMenuContent>
                   </DropdownMenu>
                   <ThemeToggle />
+                  <Button variant='outline' size='icon' onClick={signOut}>
+                     <LogOut />
+                  </Button>
                </div>
             </header>
             <main className='flex-1 py-8 px-4 md:px-8 flex flex-col items-center'>

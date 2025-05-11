@@ -24,7 +24,6 @@ export default function SignInForm() {
       onSuccess: (data) => {
          localStorage.setItem("token", data.token);
          setToken(data.token);
-         toast("Login successful", "success");
          navigate("/");
       },
       onError: (error) => {

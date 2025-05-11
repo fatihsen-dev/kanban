@@ -14,6 +14,7 @@ interface State {
    addInvitation: (invitation: IInvitation) => void;
    removeInvitation: (invitation: IInvitation) => void;
    clearInvitations: () => void;
+   signOut: () => void;
 }
 
 export const useAuthStore = create<State>()(
@@ -32,6 +33,11 @@ export const useAuthStore = create<State>()(
          removeInvitation: (invitation) =>
             set({ invitations: get().invitations.filter((i) => i.id !== invitation.id) }),
          clearInvitations: () => set({ invitations: [] }),
+         signOut: () => {
+            localStorage.removeItem("token");
+            set({ token: null, user: null, authMember: null, invitations: [] });
+            window.location.href = "/login";
+         },
       }),
       {
          name: "auth-store",
