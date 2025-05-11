@@ -38,7 +38,7 @@ export default function Navbar() {
    };
 
    return (
-      <div className='flex items-center justify-between border-2 border-dashed border-gray-300 rounded-md px-2.5 py-2'>
+      <div className='flex items-center bg-muted/40 justify-between border-2 border-dashed rounded-md px-2.5 py-2'>
          <div className='flex items-center gap-2'>
             <NavLink to='/'>
                <Button variant='outline' size='icon'>

@@ -63,9 +63,9 @@ function Team({ team, setEditingTeam, setTab }: TeamProps) {
    };
 
    return (
-      <li className='flex items-center justify-between gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+      <li className='flex items-center justify-between gap-2 bg-muted/40 border border-foreground/10 rounded-sm p-2'>
          <h3 className='text-lg pl-1 font-medium'>{team.name}</h3>
-         <div className='ml-auto bg-white rounded-sm p-1 px-3 border capitalize border-gray-200'>{team.role}</div>
+         <div className='ml-auto bg-muted rounded-sm p-1 px-3 border capitalize border-foreground/10'>{team.role}</div>
          <Button size='icon' variant='outline' onClick={handleEdit}>
             <Pencil />
          </Button>

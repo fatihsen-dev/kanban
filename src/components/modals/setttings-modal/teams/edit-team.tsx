@@ -159,9 +159,9 @@ function AddMemberDialog({
             {members.length > 0 && (
                <div className='flex flex-col gap-2'>
                   <span>Members</span>
-                  <ul className='flex flex-col gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+                  <ul className='flex flex-col gap-2 bg-muted/40 border border-foreground/10 rounded-sm p-2'>
                      {members.map((member) => (
-                        <div key={member.id} className='flex items-center justify-between'>
+                        <div key={member.id} className='flex items-center justify-between pl-2'>
                            <span>{member.user.name}</span>
                            <Button variant='outline' size='icon' onClick={() => addMember(member)}>
                               <Plus />
@@ -174,9 +174,9 @@ function AddMemberDialog({
             {selectedMembers.length > 0 && (
                <div className='flex flex-col gap-2'>
                   <span>Selected Members</span>
-                  <div className='flex flex-col gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+                  <div className='flex flex-col gap-2 bg-muted/40 border border-foreground/10 rounded-sm p-2'>
                      {selectedMembers.map((member) => (
-                        <div key={member.id} className='flex items-center justify-between gap-2'>
+                        <div key={member.id} className='flex items-center justify-between gap-2 pl-2'>
                            <span>{member.user.name}</span>
                            <Button variant='outline' size='icon' onClick={() => removeMember(member)}>
                               <Trash />
@@ -217,14 +217,14 @@ function Member({ member }: { member: IProjectMember }) {
    return (
       <div
          key={member.id}
-         className='flex items-center justify-start gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+         className='flex items-center justify-start gap-2 bg-muted/40 border border-foreground/10 rounded-sm p-2'>
          <Avatar>
             <AvatarImage src={""} />
-            <AvatarFallback className='bg-gray-200 text-gray-500'>{member.user.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className='bg-muted text-muted-foreground'>{member.user.name.charAt(0)}</AvatarFallback>
          </Avatar>
          <div className='flex flex-col leading-[1.2rem]'>
             <span>{member.user.name}</span>
-            <span className='text-xs text-gray-500'>Joined on {formatDate(member.created_at)}</span>
+            <span className='text-xs text-gray-500/60'>Joined on {formatDate(member.created_at)}</span>
          </div>
          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>

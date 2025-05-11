@@ -83,7 +83,7 @@ export default function Project() {
                <RoleGuard roles={["owner", "admin"]}>
                   <div
                      onClick={openCreateColumnModal}
-                     className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center transition-all hover:bg-gray-100 cursor-pointer text-gray-700 h-full'>
+                     className='bg-muted/40 border-2 border-dashed rounded-md p-4 flex items-center justify-center transition-all hover:bg-muted/50 cursor-pointer text-muted-foreground h-full'>
                      <Plus size={36} strokeWidth={1.3} />
                   </div>
                </RoleGuard>

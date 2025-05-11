@@ -42,14 +42,14 @@ function Member({ member, updateRole }: MemberProps) {
    return (
       <div
          key={member.id}
-         className='flex items-center justify-start gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'>
+         className='flex items-center justify-start gap-2 bg-muted/40 border border-foreground/10 rounded-sm p-2'>
          <Avatar>
             <AvatarImage src={""} />
-            <AvatarFallback className='bg-gray-200 text-gray-500'>{member.user.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className='bg-muted text-muted-foreground'>{member.user.name.charAt(0)}</AvatarFallback>
          </Avatar>
          <div className='flex flex-col leading-[1.2rem]'>
             <span>{member.user.name}</span>
-            <span className='text-xs text-gray-500'>Joined on {formatDate(member.created_at)}</span>
+            <span className='text-xs text-gray-500/60'>Joined on {formatDate(member.created_at)}</span>
          </div>
          <RoleSelect role={role} setRole={setRole} onChange={handleChange} className='ml-auto' />
       </div>

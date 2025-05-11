@@ -52,15 +52,15 @@ export default function Task({ task, column_id, taskId, setTaskId }: TaskProps) 
    return (
       <div
          ref={isAllowed ? ref : null}
-         className={`bg-white border-2 border-dashed border-gray-300 rounded-md p-2 px-3 transition-colors ${
+         className={`bg-muted/50 border-2 border-dashed rounded-md p-2 px-3 transition-colors ${
             isDragging ? "opacity-50" : "opacity-100"
          } ${isAllowed ? "cursor-move" : ""}`}>
          <div className='flex items-center gap-2 justify-between'>
-            <span className='text-xs text-gray-500'>{formatDate(task.created_at)}</span>
+            <span className='text-xs text-gray-500/60'>{formatDate(task.created_at)}</span>
             <RoleGuard roles={["owner", "admin", "write"]}>
                <DropdownMenu>
                   <DropdownMenuTrigger className='cursor-pointer'>
-                     <Ellipsis className='w-full! h-full! text-gray-500' />
+                     <Ellipsis className='w-full! h-full!' />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side='left' align='start' sideOffset={0} alignOffset={0}>
                      <DropdownMenuLabel>Task</DropdownMenuLabel>
