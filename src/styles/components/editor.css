@@ -3,35 +3,35 @@
    --editor-font-size: 16px;
 }
 
-.w-md-editor .copied {
+.markdown-editor .copied {
    background-color: var(--foreground) !important;
    color: var(--background) !important;
 }
 
-.w-md-editor ol li {
+.markdown-editor ol li {
    list-style-type: decimal !important;
 }
 
-.w-md-editor ul li:not(> input) {
+.markdown-editor ul li:not(> input) {
    list-style-type: disc !important;
 }
 
-.large-icon-editor .w-md-editor-toolbar svg {
+.markdown-editor .w-md-editor-toolbar svg {
    width: var(--icon-size) !important;
    height: var(--icon-size) !important;
 }
 
-.large-icon-editor .w-md-editor-toolbar {
+.markdown-editor .w-md-editor-toolbar {
    user-select: none !important;
    -webkit-user-select: none !important;
 }
 
-.large-icon-editor .w-md-editor-toolbar svg.custom-icon {
+.markdown-editor .w-md-editor-toolbar svg.custom-icon {
    width: calc(var(--icon-size) + 3px) !important;
    height: calc(var(--icon-size) + 3px) !important;
 }
 
-.large-icon-editor .w-md-editor-toolbar button {
+.markdown-editor .w-md-editor-toolbar button {
    height: calc(var(--icon-size) + 10px) !important;
    width: calc(var(--icon-size) + 10px) !important;
    display: flex;
@@ -40,12 +40,12 @@
    border-radius: 5px;
 }
 
-.large-icon-editor .w-md-editor-toolbar button:disabled {
+.markdown-editor .w-md-editor-toolbar button:disabled {
    opacity: 0 !important;
    pointer-events: none !important;
 }
 
-.large-icon-editor .w-md-editor-toolbar {
+.markdown-editor .w-md-editor-toolbar {
    height: auto !important;
    padding: 5px !important;
 }
@@ -80,4 +80,12 @@
 .w-md-editor-bar svg {
    width: 100% !important;
    height: 100% !important;
+}
+
+.markdown-editor.preview {
+   @apply bg-transparent;
+}
+
+.markdown-editor a.anchor {
+   display: none !important;
 }

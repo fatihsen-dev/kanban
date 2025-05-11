@@ -31,9 +31,10 @@ const ToggleButton = () => {
 interface EditorProps {
    value: string;
    setValue: (value: string) => void;
+   extraCommands?: boolean;
 }
 
-export default function Editor({ value, setValue }: EditorProps) {
+export default function Editor({ value, setValue, extraCommands = true }: EditorProps) {
    const filteredCommands = commands
       .getCommands()
       .filter((cmd) => cmd.keyCommand !== "help" && cmd.keyCommand !== "divider");
@@ -46,15 +47,13 @@ export default function Editor({ value, setValue }: EditorProps) {
    };
 
    return (
-      <div className='container' data-color-mode='light'>
-         <MDEditor
-            value={value}
-            onChange={(e) => setValue(e ?? "")}
-            commands={filteredCommands}
-            extraCommands={[previewCommand]}
-            preview={value.length > 0 ? "preview" : "edit"}
-            className='large-icon-editor'
-         />
-      </div>
+      <MDEditor
+         value={value}
+         onChange={(e) => setValue(e ?? "")}
+         commands={filteredCommands}
+         extraCommands={extraCommands ? [previewCommand] : []}
+         preview='edit'
+         className='markdown-editor editor'
+      />
    );
 }
