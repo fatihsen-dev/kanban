@@ -121,7 +121,7 @@ export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
                         isEditing ? "bg-gray-50" : "border"
                      }`}
                      data-color-mode='light'>
-                     {isEditing ? (
+                     {isEditing || !updatableTask?.content?.length ? (
                         <Editor value={updatableTask?.content || ""} setValue={setContent} extraCommands={false} />
                      ) : (
                         <Preview content={updatableTask?.content || ""} />
