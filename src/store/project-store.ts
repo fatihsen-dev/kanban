@@ -72,9 +72,16 @@ export const useProjectStore = create<State>()(
             set((state) => ({ projects: [...state.projects, project] }));
          },
          removeProject: (project_id: IProject["id"]) => {
-            set((state) => ({
-               projects: state.projects.filter((project) => project.id !== project_id),
-            }));
+            if (get().project?.id === project_id) {
+               set({
+                  project: null,
+                  projects: get().projects.filter((project) => project.id !== project_id),
+               });
+            } else {
+               set(() => ({
+                  projects: get().projects.filter((project) => project.id !== project_id),
+               }));
+            }
          },
          column: {
             getById: (column_id) => {

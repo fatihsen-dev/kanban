@@ -1,14 +1,21 @@
+import useProject from "@/hooks/use-project";
+import useToast from "@/hooks/use-toast";
+import { useAuthStore } from "@/store/auth-store";
 import { ModalType, useModalStore } from "@/store/modal-store";
 import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { Trash } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router";
 import Loading from "../loading";
 import { Button } from "../ui/button";
 export default function Projects() {
-   const { projects, setProjects } = useProjectStore();
+   const { projects, setProjects, removeProject } = useProjectStore();
    const { setIsOpen } = useModalStore();
+   const { delete: deleteProject } = useProject();
+   const { user } = useAuthStore();
+   const { toast } = useToast();
 
    const { data, isLoading, error } = useQuery<ISuccessResponse<IProject[]>, AxiosError<IErrorResponse>>({
       queryKey: [`projects`],
@@ -29,6 +36,16 @@ export default function Projects() {
       return <Loading />;
    }
 
+   const handleDeleteProject = (project_id: IProject["id"]) => {
+      deleteProject(project_id, (error) => {
+         if (error) {
+            toast(error || "Project deletion failed", "error");
+         } else {
+            removeProject(project_id);
+         }
+      });
+   };
+
    const handleOpenCreateProjectModal = () => {
       setIsOpen(true, ModalType.CREATE_PROJECT);
    };
@@ -43,15 +60,24 @@ export default function Projects() {
          ) : (
             <ul className='flex flex-col gap-2'>
                {projects.map((project) => (
-                  <li key={project.id}>
-                     <NavLink
-                        className='p-3 flex rounded-md bg-muted/50 hover:bg-accent/50 transition-colors cursor-pointer border border-border/40 items-center'
-                        to={`/${project.id}`}>
+                  <li
+                     className='p-3 flex rounded-md bg-muted/50 hover:bg-accent/50 transition-colors border border-border/40 items-center'
+                     key={project.id}>
+                     <NavLink className='flex items-center w-full' to={`/${project.id}`}>
                         <div className='w-8 h-8 rounded-md bg-primary/20 text-primary flex items-center justify-center mr-3 font-medium'>
                            {project.name.charAt(0).toUpperCase()}
                         </div>
                         <span className='font-medium'>{project.name}</span>
                      </NavLink>
+                     {user?.id === project.owner_id && (
+                        <Button
+                           className='ml-auto'
+                           variant='destructive'
+                           size='icon'
+                           onClick={() => handleDeleteProject(project.id)}>
+                           <Trash />
+                        </Button>
+                     )}
                   </li>
                ))}
             </ul>

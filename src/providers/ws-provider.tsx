@@ -4,7 +4,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { useProjectStore } from "@/store/project-store";
 import { useWsStore } from "@/store/ws-store";
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useWebSocket from "react-use-websocket";
 
 interface WsProviderProps {
@@ -12,8 +12,9 @@ interface WsProviderProps {
 }
 
 export default function WsProvider({ children }: WsProviderProps) {
+   const navigate = useNavigate();
    const { setLastMessage } = useWsStore();
-   const { task, column, updateMemberByUserId, team, member } = useProjectStore();
+   const { task, column, updateMemberByUserId, team, member, removeProject } = useProjectStore();
    const { project_id } = useParams();
    const { token, addInvitation } = useAuthStore();
 
@@ -81,9 +82,24 @@ export default function WsProvider({ children }: WsProviderProps) {
                   },
                });
                break;
+            case EventName.ProjectDeleted:
+               removeProject((lastJsonMessage.data as { id: string }).id);
+               navigate("/");
+               break;
          }
       }
-   }, [lastJsonMessage, task, column, addInvitation, setLastMessage, updateMemberByUserId, team, member]);
+   }, [
+      lastJsonMessage,
+      task,
+      column,
+      addInvitation,
+      setLastMessage,
+      updateMemberByUserId,
+      team,
+      member,
+      removeProject,
+      navigate,
+   ]);
 
    if (readyState === 1) {
       return <>{children}</>;
