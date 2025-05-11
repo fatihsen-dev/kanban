@@ -59,8 +59,8 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
       <div
          ref={drop as unknown as React.RefObject<HTMLDivElement>}
          style={column.color ? { borderColor: `${column.color}` } : {}}
-         className={`bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-4 min-w-96 h-full overflow-auto flex flex-col gap-4 transition-colors ${
-            isOver ? "bg-gray-200" : ""
+         className={`bg-muted/40 border-2 border-dashed rounded-md p-4 min-w-96 h-full overflow-auto flex flex-col gap-4 transition-colors ${
+            isOver ? "bg-muted/50" : ""
          }`}>
          <div className='flex flex-col w-full'>
             <div className='w-full flex items-center justify-between gap-2'>
@@ -85,7 +85,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
                   </DropdownMenu>
                </RoleGuard>
             </div>
-            <span className='text-sm text-gray-500'>{column.tasks.length} tasks</span>
+            <span className='text-sm text-gray-500/60'>{column.tasks.length} tasks</span>
          </div>
          <div className='flex flex-col gap-2 flex-1 overflow-y-auto'>
             {column.tasks.map((task) => (
@@ -93,7 +93,7 @@ export default function Column({ column, taskId, setTaskId }: ColumnProps) {
             ))}
          </div>
          <RoleGuard roles={["owner", "admin", "write"]}>
-            <div className='flex justify-between items-center border-t border-gray-300 pt-4'>
+            <div className='flex justify-between items-center border-t pt-4'>
                <Button size='lg' variant='outline' className='w-full' onClick={openCreateTaskModal}>
                   Add Task
                </Button>

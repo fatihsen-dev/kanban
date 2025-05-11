@@ -163,13 +163,15 @@ export default function InviteMemberModal() {
                   </div>
                )}
                {selectedUsers.length > 0 && (
-                  <div className='flex flex-col gap-2 bg-blue-100 border border-blue-200 p-2 rounded-md'>
+                  <div className='flex flex-col gap-2 bg-muted/40 border border-foreground/10 p-2 rounded-md'>
                      <h3 className='text-sm font-medium'>Selected Members</h3>
                      <ul>
                         {selectedUsers.map((user) => (
                            <li key={user.id} className='flex items-center gap-2'>
                               <Avatar>
-                                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                 <AvatarFallback className='bg-muted text-muted-foreground'>
+                                    {user.name.charAt(0)}
+                                 </AvatarFallback>
                               </Avatar>
                               <div className='flex flex-col'>
                                  <p className='text-sm font-medium'>{user.name}</p>

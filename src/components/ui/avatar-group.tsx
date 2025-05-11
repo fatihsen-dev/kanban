@@ -46,9 +46,7 @@ export function AvatarGroup({ users, max = 3, size = "md", className }: AvatarGr
                <Tooltip>
                   <TooltipTrigger>
                      <div className='relative'>
-                        <Avatar
-                           title={user.name}
-                           className={cn("border-2 border-background ring-0", sizeClasses[size])}>
+                        <Avatar title={user.name} className={cn("border bg-foreground/5 ring-0", sizeClasses[size])}>
                            {user.image ? <AvatarImage src={user.image} alt={user.name} /> : null}
                            <AvatarFallback>
                               {user.name
@@ -80,7 +78,7 @@ export function AvatarGroup({ users, max = 3, size = "md", className }: AvatarGr
                <DialogTrigger className='relative z-10' asChild>
                   <div
                      className={cn(
-                        "flex items-center cursor-pointer justify-center rounded-full bg-muted text-muted-foreground border-2 border-background",
+                        "flex items-center cursor-pointer justify-center rounded-full bg-muted text-muted-foreground border border-foreground/10 !text-xs font-medium",
                         sizeClasses[size]
                      )}>
                      +{remaining}
@@ -93,11 +91,11 @@ export function AvatarGroup({ users, max = 3, size = "md", className }: AvatarGr
                   <div className='flex flex-col gap-2'>
                      {users.map((user) => (
                         <div
-                           className='flex items-center justify-start gap-2 bg-gray-50 border border-gray-200 rounded-sm p-2'
+                           className='flex items-center justify-start gap-2 bg-muted/40 border border-foreground/10 rounded-sm p-2'
                            key={user.id}>
                            <Avatar>
                               <AvatarImage src={""} />
-                              <AvatarFallback className='bg-gray-200 text-gray-500'>
+                              <AvatarFallback className='bg-muted text-muted-foreground'>
                                  {user.name.charAt(0)}
                               </AvatarFallback>
                            </Avatar>

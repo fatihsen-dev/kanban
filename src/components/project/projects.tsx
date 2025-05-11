@@ -34,26 +34,31 @@ export default function Projects() {
    };
 
    return (
-      <div className='flex flex-col gap-4 max-w-md w-full bg-blue-100 border border-blue-200 rounded-md p-4'>
+      <div className='flex flex-col gap-4 w-full bg-card border rounded-lg shadow-sm p-4'>
          {projects.length === 0 ? (
             <div className='flex flex-col gap-2'>
-               <h3 className='text-lg font-bold'>No projects</h3>
-               <p className='text-sm text-gray-500'>Create a new project to get started</p>
+               <h3 className='text-lg font-medium'>No projects</h3>
+               <p className='text-sm text-muted-foreground'>Create a new project to get started</p>
             </div>
          ) : (
             <ul className='flex flex-col gap-2'>
                {projects.map((project) => (
                   <li key={project.id}>
                      <NavLink
-                        className='py-2 px-4 flex rounded-md bg-white hover:bg-gray-100 transition-colors cursor-pointer'
+                        className='p-3 flex rounded-md bg-muted/50 hover:bg-accent/50 transition-colors cursor-pointer border border-border/40 items-center'
                         to={`/${project.id}`}>
-                        {project.name}
+                        <div className='w-8 h-8 rounded-md bg-primary/20 text-primary flex items-center justify-center mr-3 font-medium'>
+                           {project.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span className='font-medium'>{project.name}</span>
                      </NavLink>
                   </li>
                ))}
             </ul>
          )}
-         <Button onClick={handleOpenCreateProjectModal}>Create Project</Button>
+         <Button className='mt-2' onClick={handleOpenCreateProjectModal} size='sm'>
+            Create Project
+         </Button>
       </div>
    );
 }

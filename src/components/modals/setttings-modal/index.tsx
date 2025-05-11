@@ -45,7 +45,7 @@ export default function SettingsModal() {
                         .map((tab) => (
                            <TabsTrigger
                               key={tab.value}
-                              className='w-full rounded-sm !shadow-none border !bg-gray-100 border-gray-200 justify-start cursor-pointer data-[state=active]:!bg-cyan-700 data-[state=active]:!text-white !transition-none'
+                              className='w-full rounded-sm !shadow-none border !bg-muted/40 border-foreground/10 justify-start cursor-pointer data-[state=active]:!bg-cyan-700 data-[state=active]:!text-white !transition-none'
                               value={tab.value}>
                               {tab.label}
                            </TabsTrigger>
