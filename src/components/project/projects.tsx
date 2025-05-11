@@ -1,3 +1,12 @@
+import {
+   Dialog,
+   DialogContent,
+   DialogDescription,
+   DialogFooter,
+   DialogHeader,
+   DialogTitle,
+   DialogTrigger,
+} from "@/components/ui/dialog";
 import useProject from "@/hooks/use-project";
 import useToast from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/auth-store";
@@ -6,16 +15,18 @@ import { useProjectStore } from "@/store/project-store";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Trash } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router";
 import Loading from "../loading";
 import { Button } from "../ui/button";
+
 export default function Projects() {
    const { projects, setProjects, removeProject } = useProjectStore();
    const { setIsOpen } = useModalStore();
    const { delete: deleteProject } = useProject();
    const { user } = useAuthStore();
    const { toast } = useToast();
+   const [open, setOpen] = useState(false);
 
    const { data, isLoading, error } = useQuery<ISuccessResponse<IProject[]>, AxiosError<IErrorResponse>>({
       queryKey: [`projects`],
@@ -70,13 +81,34 @@ export default function Projects() {
                         <span className='font-medium'>{project.name}</span>
                      </NavLink>
                      {user?.id === project.owner_id && (
-                        <Button
-                           className='ml-auto'
-                           variant='destructive'
-                           size='icon'
-                           onClick={() => handleDeleteProject(project.id)}>
-                           <Trash />
-                        </Button>
+                        <Dialog open={open} onOpenChange={setOpen}>
+                           <DialogTrigger asChild>
+                              <Button
+                                 className='ml-auto'
+                                 variant='destructive'
+                                 size='icon'
+                                 onClick={() => setOpen(true)}>
+                                 <Trash />
+                              </Button>
+                           </DialogTrigger>
+                           <DialogContent>
+                              <DialogHeader>
+                                 <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                 <DialogDescription>
+                                    This action cannot be undone. This will permanently delete the project and remove it
+                                    from the project.
+                                 </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                 <Button variant='outline' onClick={() => setOpen(false)}>
+                                    Cancel
+                                 </Button>
+                                 <Button variant='destructive' onClick={() => handleDeleteProject(project.id)}>
+                                    Delete
+                                 </Button>
+                              </DialogFooter>
+                           </DialogContent>
+                        </Dialog>
                      )}
                   </li>
                ))}
