@@ -6,7 +6,7 @@ export default function useTask() {
    const { toast } = useToast();
    const { task: taskState, project } = useProjectStore();
 
-   const createMutation = useMutation<ITask, Pick<ITask, "title" | "column_id" | "project_id">>();
+   const createMutation = useMutation<ITask, Pick<ITask, "title" | "content" | "column_id" | "project_id">>();
    const updateMutation = useMutation<ITask, Partial<ITask> & Pick<ITask, "id">>();
    const removeMutation = useMutation<void, Pick<ITask, "project_id">>();
 
@@ -16,7 +16,10 @@ export default function useTask() {
       return taskState.getById(taskId);
    };
 
-   const create = (task: Pick<ITask, "title" | "column_id" | "project_id">, callback?: (error?: string) => void) => {
+   const create = (
+      task: Pick<ITask, "title" | "content" | "column_id" | "project_id">,
+      callback?: (error?: string) => void
+   ) => {
       if (!project) return;
 
       createMutation.mutate(

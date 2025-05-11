@@ -1,6 +1,4 @@
-"use client";
-
-import { CircleCheck, CircleX, X } from "lucide-react";
+import { CircleCheck, CircleX } from "lucide-react";
 import rht from "react-hot-toast";
 
 export default function useToast() {
@@ -20,12 +18,6 @@ export default function useToast() {
                )}
                <p className='text-sm'>{message}</p>
             </div>
-
-            <button
-               className='h-5 aspect-square bg-gray-100 mr-1.5 rounded-md flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-200 transition-colors'
-               onClick={() => rht.dismiss(t.id)}>
-               <X size={18} className='cursor-pointer' />
-            </button>
          </div>
       ));
    };
