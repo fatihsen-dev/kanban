@@ -32,7 +32,7 @@ export default function CreateTaskModal() {
       if (title.trim() === "" || !column_id) return;
       if (!store.project) return;
 
-      create({ title, column_id, project_id: store.project.id }, (error) => {
+      create({ title, column_id, project_id: store.project.id, content: null }, (error) => {
          if (error) {
             toast(error, "error");
          } else {
