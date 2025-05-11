@@ -13,6 +13,7 @@ import { useQueryState } from "nuqs";
 import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { Helmet } from "react-helmet";
 import { useParams } from "react-router";
 
 export default function Project() {
@@ -67,29 +68,34 @@ export default function Project() {
    };
 
    return (
-      <DndProvider backend={HTML5Backend}>
-         <div className='flex flex-col p-4 gap-4 h-screen'>
-            <Navbar />
-            <div className='flex gap-4 flex-1 h-full overflow-x-auto'>
-               <div
-                  className='grid gap-4 h-full'
-                  style={{
-                     gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
-                  }}>
-                  {project?.columns.map((column) => (
-                     <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
-                  ))}
-               </div>
-               <RoleGuard roles={["owner", "admin"]}>
+      <>
+         <Helmet>
+            <title>{project?.name} - Kanban</title>
+         </Helmet>
+         <DndProvider backend={HTML5Backend}>
+            <div className='flex flex-col p-4 gap-4 h-screen'>
+               <Navbar />
+               <div className='flex gap-4 flex-1 h-full overflow-x-auto'>
                   <div
-                     onClick={openCreateColumnModal}
-                     className='bg-muted/40 border-2 border-dashed rounded-md p-4 flex items-center justify-center transition-all hover:bg-muted/50 cursor-pointer text-muted-foreground h-full'>
-                     <Plus size={36} strokeWidth={1.3} />
+                     className='grid gap-4 h-full'
+                     style={{
+                        gridTemplateColumns: `repeat(${project?.columns.length}, 1fr)`,
+                     }}>
+                     {project?.columns.map((column) => (
+                        <Column key={column.id} column={column} taskId={taskId} setTaskId={setTaskId} />
+                     ))}
                   </div>
-               </RoleGuard>
-               <TaskDetails taskId={taskId} setTaskId={setTaskId} />
+                  <RoleGuard roles={["owner", "admin"]}>
+                     <div
+                        onClick={openCreateColumnModal}
+                        className='bg-muted/40 border-2 border-dashed rounded-md p-4 flex items-center justify-center transition-all hover:bg-muted/50 cursor-pointer text-muted-foreground h-full'>
+                        <Plus size={36} strokeWidth={1.3} />
+                     </div>
+                  </RoleGuard>
+                  <TaskDetails taskId={taskId} setTaskId={setTaskId} />
+               </div>
             </div>
-         </div>
-      </DndProvider>
+         </DndProvider>
+      </>
    );
 }
