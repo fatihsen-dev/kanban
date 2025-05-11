@@ -7,7 +7,6 @@ import { useProjectStore } from "@/store/project-store";
 import { useState } from "react";
 
 export default function Members() {
-   const { authMember } = useAuthStore();
    const { update } = useMember();
    const { project } = useProjectStore();
 
@@ -17,11 +16,9 @@ export default function Members() {
 
    return (
       <div className='space-y-2'>
-         {project?.members
-            .filter((member) => member.user.id !== authMember?.user.id && member.user.id !== project.owner_id)
-            .map((member) => (
-               <Member key={member.id} member={member} updateRole={updateRole} />
-            ))}
+         {project?.members.map((member) => (
+            <Member key={member.id} member={member} updateRole={updateRole} />
+         ))}
       </div>
    );
 }
@@ -32,6 +29,7 @@ interface MemberProps {
 }
 
 function Member({ member, updateRole }: MemberProps) {
+   const { authMember } = useAuthStore();
    const [role, setRole] = useState<IProjectAccessRole>(member.role);
 
    const handleChange = (role: IProjectAccessRole) => {
@@ -51,7 +49,9 @@ function Member({ member, updateRole }: MemberProps) {
             <span>{member.user.name}</span>
             <span className='text-xs text-gray-500/60'>Joined on {formatDate(member.created_at)}</span>
          </div>
-         <RoleSelect role={role} setRole={setRole} onChange={handleChange} className='ml-auto' />
+         {authMember?.id !== member.id && (
+            <RoleSelect role={role} setRole={setRole} onChange={handleChange} className='ml-auto' />
+         )}
       </div>
    );
 }
