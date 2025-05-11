@@ -5,7 +5,7 @@ import { useProjectStore } from "@/store/project-store";
 import { useWsStore } from "@/store/ws-store";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import useWebSocket from "react-use-websocket";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 interface WsProviderProps {
    children: React.ReactNode;
@@ -101,7 +101,13 @@ export default function WsProvider({ children }: WsProviderProps) {
       navigate,
    ]);
 
-   if (readyState === 1) {
+   useEffect(() => {
+      if (readyState !== ReadyState.CONNECTING && readyState !== ReadyState.OPEN) {
+         navigate("/");
+      }
+   }, [readyState, navigate]);
+
+   if (readyState === ReadyState.OPEN) {
       return <>{children}</>;
    }
 
