@@ -29,7 +29,9 @@ export default function Invitations() {
          {
             onSuccess: () => {
                setInvitations([]);
-               navigate(`/${invitation.project.id}`);
+               if (status === "accepted") {
+                  navigate(`/${invitation.project.id}`);
+               }
             },
             onError: (error) => {
                toast(error.response?.data.message || "Something went wrong", "error");

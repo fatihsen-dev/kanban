@@ -24,9 +24,7 @@ export default function Projects() {
    const { projects, setProjects, removeProject } = useProjectStore();
    const { setIsOpen } = useModalStore();
    const { delete: deleteProject } = useProject();
-   const { user } = useAuthStore();
    const { toast } = useToast();
-   const [open, setOpen] = useState(false);
 
    const { data, isLoading, error } = useQuery<ISuccessResponse<IProject[]>, AxiosError<IErrorResponse>>({
       queryKey: [`projects`],
@@ -47,6 +45,10 @@ export default function Projects() {
       return <Loading />;
    }
 
+   const handleOpenCreateProjectModal = () => {
+      setIsOpen(true, ModalType.CREATE_PROJECT);
+   };
+
    const handleDeleteProject = (project_id: IProject["id"]) => {
       deleteProject(project_id, (error) => {
          if (error) {
@@ -55,10 +57,6 @@ export default function Projects() {
             removeProject(project_id);
          }
       });
-   };
-
-   const handleOpenCreateProjectModal = () => {
-      setIsOpen(true, ModalType.CREATE_PROJECT);
    };
 
    return (
@@ -71,46 +69,7 @@ export default function Projects() {
          ) : (
             <ul className='flex flex-col gap-2'>
                {projects.map((project) => (
-                  <li
-                     className='p-3 flex rounded-md bg-muted/50 hover:bg-accent/50 transition-colors border border-border/40 items-center'
-                     key={project.id}>
-                     <NavLink className='flex items-center w-full' to={`/${project.id}`}>
-                        <div className='w-8 h-8 rounded-md bg-primary/20 text-primary flex items-center justify-center mr-3 font-medium'>
-                           {project.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className='font-medium'>{project.name}</span>
-                     </NavLink>
-                     {user?.id === project.owner_id && (
-                        <Dialog open={open} onOpenChange={setOpen}>
-                           <DialogTrigger asChild>
-                              <Button
-                                 className='ml-auto'
-                                 variant='destructive'
-                                 size='icon'
-                                 onClick={() => setOpen(true)}>
-                                 <Trash />
-                              </Button>
-                           </DialogTrigger>
-                           <DialogContent>
-                              <DialogHeader>
-                                 <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                 <DialogDescription>
-                                    This action cannot be undone. This will permanently delete the project and remove it
-                                    from the project.
-                                 </DialogDescription>
-                              </DialogHeader>
-                              <DialogFooter>
-                                 <Button variant='outline' onClick={() => setOpen(false)}>
-                                    Cancel
-                                 </Button>
-                                 <Button variant='destructive' onClick={() => handleDeleteProject(project.id)}>
-                                    Delete
-                                 </Button>
-                              </DialogFooter>
-                           </DialogContent>
-                        </Dialog>
-                     )}
-                  </li>
+                  <Project key={project.id} project={project} handleDeleteProject={handleDeleteProject} />
                ))}
             </ul>
          )}
@@ -118,5 +77,57 @@ export default function Projects() {
             Create Project
          </Button>
       </div>
+   );
+}
+
+function Project({
+   project,
+   handleDeleteProject,
+}: {
+   project: IProject;
+   handleDeleteProject: (project_id: IProject["id"]) => void;
+}) {
+   const [open, setOpen] = useState(false);
+   const { user } = useAuthStore();
+
+   return (
+      <li
+         className='p-3 flex rounded-md bg-muted/50 hover:bg-accent/50 transition-colors border border-border/40 items-center'
+         key={project.id}>
+         <NavLink className='flex items-center w-full' to={`/${project.id}`}>
+            <div className='w-8 h-8 rounded-md bg-primary/20 text-primary flex items-center justify-center mr-3 font-medium'>
+               {project.name.charAt(0).toUpperCase()}
+            </div>
+            <span className='font-medium'>{project.name}</span>
+         </NavLink>
+         {user?.id === project.owner_id && (
+            <Dialog open={open} onOpenChange={setOpen}>
+               <DialogTrigger asChild>
+                  <Button className='ml-auto' variant='destructive' size='icon' onClick={() => setOpen(true)}>
+                     <Trash />
+                  </Button>
+               </DialogTrigger>
+               <DialogContent>
+                  <DialogHeader>
+                     <DialogTitle>
+                        Are you sure you want to delete <span className='font-bold'>{project.name}</span>?
+                     </DialogTitle>
+                     <DialogDescription>
+                        This action cannot be undone. This will permanently delete the project and remove it from the
+                        project.
+                     </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                     <Button variant='outline' onClick={() => setOpen(false)}>
+                        Cancel
+                     </Button>
+                     <Button variant='destructive' onClick={() => handleDeleteProject(project.id)}>
+                        Delete
+                     </Button>
+                  </DialogFooter>
+               </DialogContent>
+            </Dialog>
+         )}
+      </li>
    );
 }
