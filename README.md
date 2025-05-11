@@ -1,54 +1,81 @@
-# React + TypeScript + Vite
+# Kanban Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive frontend for the Kanban board application, built with React and TypeScript. Designed for seamless real-time collaboration, intuitive user experience, and easy extensibility.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-  **Framework:** React 19 (with Vite)
+-  **Language:** TypeScript
+-  **Styling:** Tailwind CSS
+-  **State Management:** Zustand
+-  **Data Fetching:** React Query
+-  **Forms:** React Hook Form
+-  **UI Components:** Radix UI, Lucide React
+-  **Markdown:** @uiw/react-md-editor
+-  **Real-time:** WebSocket (via react-use-websocket)
+-  **Build Tool:** Vite
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+-  Real-time Kanban board with drag-and-drop task management
+-  Responsive design for desktop and mobile
+-  User authentication and authorization (JWT)
+-  Team and project management
+-  Project sharing and invitation system
+-  Customizable columns and tasks
+-  Rich Markdown support for task descriptions
+-  Toast notifications and modern UI/UX
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Main Components & Structure
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+-  **Pages:** Organized under `src/pages` (e.g., Home, Login, Register, Project)
+-  **Components:** Reusable UI elements in `src/components`
+-  **State:** Global state managed with Zustand (`src/store`)
+-  **Context:** Context providers for auth and app-wide state (`src/contexts`)
+-  **Hooks:** Custom React hooks in `src/hooks`
+-  **Schemas:** Zod schemas for validation (`src/schemas`)
+-  **Styles:** Tailwind CSS configuration in `src/styles`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Getting Started
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Prerequisites
+
+-  Node.js (18+ recommended)
+-  npm or bun
+
+### Development Setup
+
+1. Install dependencies:
+   ```
+   npm install
+   # or
+   bun install
+   ```
+2. Set up environment variables and backend API URL if needed.
+3. Start the development server:
+   ```
+   npm run dev
+   # or
+   bun run dev
+   ```
+4. Open the app at: `http://localhost:5173` (or the port specified by Vite)
+
+### Production Build
+
+1. Build for production:
+   ```
+   npm run build
+   # or
+   bun run build
+   ```
+2. The static files will be generated in the `dist/` directory. You can host them on any static file server.
+
+## Notes
+
+-  Fully integrated with the backend. The backend server must be running for all API calls.
+-  Uses WebSocket connection for real-time updates.
+-  The project is structured according to modern frontend development standards.
+
+---
+
+For more details, check the code or feel free to reach out with questions.
