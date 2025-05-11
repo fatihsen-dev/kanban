@@ -41,6 +41,7 @@ export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
       const task = getById(taskId);
       if (task) {
          setTask(task);
+         setIsEditing(!task!.content?.length);
          setUpdatableTask(task);
          setIsOpen(true);
          setIsLoading(false);
@@ -125,10 +126,10 @@ export default function TaskDetails({ taskId, setTaskId }: TaskDetailsProps) {
                      </DrawerHeader>
                      <div
                         className={`flex flex-col gap-4 overflow-auto p-2 rounded-sm ${
-                           isEditing ? "bg-gray-50" : "border"
+                           isEditing ? "bg-muted" : "border"
                         }`}
                         data-color-mode={theme}>
-                        {isEditing || !updatableTask?.content?.length ? (
+                        {isEditing ? (
                            <Editor value={updatableTask?.content || ""} setValue={setContent} extraCommands={false} />
                         ) : (
                            <Preview content={updatableTask?.content || ""} />

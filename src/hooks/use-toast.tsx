@@ -8,7 +8,7 @@ export default function useToast() {
             style={{
                animation: t.visible ? "enter 200ms ease-out" : "leave 150ms ease-in forwards",
             }}
-            className='border-gray-200 bg-white border rounded-md flex items-center p-1 text-nowrap transition-transform duration-300'>
+            className='border bg-muted rounded-md flex items-center p-1 text-nowrap transition-transform duration-300'>
             <div className='flex items-center gap-2 px-2 pr-3 py-2.5'>
                {type !== "info" && (
                   <>
