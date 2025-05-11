@@ -28,6 +28,7 @@ export default function Invitations() {
          },
          {
             onSuccess: () => {
+               setInvitations([]);
                navigate(`/${invitation.project.id}`);
             },
             onError: (error) => {
@@ -57,10 +58,10 @@ export default function Invitations() {
             <p className='text-sm text-muted-foreground py-1 px-2'>No pending invitations</p>
          ) : (
             <ul className='w-full flex flex-col gap-2 max-h-[300px] overflow-y-auto'>
-               {invitations.map((invitation) => {
+               {invitations.map((invitation, index) => {
                   return (
                      <li
-                        key={invitation.id}
+                        key={index}
                         className='py-2 w-full px-3 rounded-md flex justify-between items-start bg-muted/50 hover:bg-accent/50 transition-colors border border-border/40'>
                         <div className='text-sm'>
                            <span className='font-medium text-primary'>{invitation.inviter.name}</span>
